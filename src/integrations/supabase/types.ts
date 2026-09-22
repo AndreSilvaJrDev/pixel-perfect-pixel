@@ -14,7 +14,277 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activities: {
+        Row: {
+          created_at: string
+          difficulty: string
+          game_mode: string
+          grade: number
+          id: string
+          is_demo: boolean
+          owner_id: string
+          subject: string
+          title: string
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: string
+          game_mode?: string
+          grade: number
+          id?: string
+          is_demo?: boolean
+          owner_id: string
+          subject: string
+          title: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: string
+          game_mode?: string
+          grade?: number
+          id?: string
+          is_demo?: boolean
+          owner_id?: string
+          subject?: string
+          title?: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      answers: {
+        Row: {
+          created_at: string
+          id: string
+          is_correct: boolean
+          player_id: string
+          question_id: string
+          response_ms: number | null
+          selected_index: number | null
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          player_id: string
+          question_id: string
+          response_ms?: number | null
+          selected_index?: number | null
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          player_id?: string
+          question_id?: string
+          response_ms?: number | null
+          selected_index?: number | null
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answers_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "answers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "game_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entitlements: {
+        Row: {
+          expires_at: string | null
+          external_reference: string | null
+          granted_at: string
+          id: string
+          product: string
+          source: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          expires_at?: string | null
+          external_reference?: string | null
+          granted_at?: string
+          id?: string
+          product?: string
+          source?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          expires_at?: string | null
+          external_reference?: string | null
+          granted_at?: string
+          id?: string
+          product?: string
+          source?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      game_sessions: {
+        Row: {
+          activity_id: string
+          created_at: string
+          ended_at: string | null
+          host_id: string
+          id: string
+          pin: string
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          activity_id: string
+          created_at?: string
+          ended_at?: string | null
+          host_id: string
+          id?: string
+          pin: string
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          activity_id?: string
+          created_at?: string
+          ended_at?: string | null
+          host_id?: string
+          id?: string
+          pin?: string
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_sessions_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          id: string
+          joined_at: string
+          nickname: string
+          score: number
+          session_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          nickname: string
+          score?: number
+          session_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          nickname?: string
+          score?: number
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "game_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          school: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string
+          id: string
+          school?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          school?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          activity_id: string
+          correct_index: number
+          created_at: string
+          difficulty: string
+          explanation: string | null
+          id: string
+          options: Json
+          position: number
+          prompt: string
+        }
+        Insert: {
+          activity_id: string
+          correct_index?: number
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          options: Json
+          position?: number
+          prompt: string
+        }
+        Update: {
+          activity_id?: string
+          correct_index?: number
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          options?: Json
+          position?: number
+          prompt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
