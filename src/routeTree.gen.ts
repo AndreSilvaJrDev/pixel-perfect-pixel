@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as JogarIndexRouteImport } from './routes/jogar/index'
+import { Route as JogarCodigoRouteImport } from './routes/jogar/$codigo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +30,53 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JogarIndexRoute = JogarIndexRouteImport.update({
+  id: '/jogar/',
+  path: '/jogar/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JogarCodigoRoute = JogarCodigoRouteImport.update({
+  id: '/jogar/$codigo',
+  path: '/jogar/$codigo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
+  '/jogar/$codigo': typeof JogarCodigoRoute
+  '/jogar/': typeof JogarIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
+  '/jogar/$codigo': typeof JogarCodigoRoute
+  '/jogar': typeof JogarIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
+  '/jogar/$codigo': typeof JogarCodigoRoute
+  '/jogar/': typeof JogarIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cadastro' | '/login'
+  fullPaths: '/' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cadastro' | '/login'
-  id: '__root__' | '/' | '/cadastro' | '/login'
+  to: '/' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar'
+  id: '__root__' | '/' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CadastroRoute: typeof CadastroRoute
   LoginRoute: typeof LoginRoute
+  JogarCodigoRoute: typeof JogarCodigoRoute
+  JogarIndexRoute: typeof JogarIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +102,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jogar/': {
+      id: '/jogar/'
+      path: '/jogar'
+      fullPath: '/jogar/'
+      preLoaderRoute: typeof JogarIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jogar/$codigo': {
+      id: '/jogar/$codigo'
+      path: '/jogar/$codigo'
+      fullPath: '/jogar/$codigo'
+      preLoaderRoute: typeof JogarCodigoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +123,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CadastroRoute: CadastroRoute,
   LoginRoute: LoginRoute,
+  JogarCodigoRoute: JogarCodigoRoute,
+  JogarIndexRoute: JogarIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
