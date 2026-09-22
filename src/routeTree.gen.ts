@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JogarIndexRouteImport } from './routes/jogar/index'
@@ -18,6 +19,11 @@ import { Route as JogarCodigoRouteImport } from './routes/jogar/$codigo'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroRoute = CadastroRouteImport.update({
@@ -43,6 +49,7 @@ const JogarCodigoRoute = JogarCodigoRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/jogar/$codigo': typeof JogarCodigoRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/jogar/$codigo': typeof JogarCodigoRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/jogar/$codigo': typeof JogarCodigoRoute
@@ -65,14 +74,23 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar/'
+  fullPaths:
+    '/' | '/app' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar'
-  id: '__root__' | '/' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar/'
+  to: '/' | '/app' | '/cadastro' | '/login' | '/jogar/$codigo' | '/jogar'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/cadastro'
+    | '/login'
+    | '/jogar/$codigo'
+    | '/jogar/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRouteRoute: typeof AppRouteRoute
   CadastroRoute: typeof CadastroRoute
   LoginRoute: typeof LoginRoute
   JogarCodigoRoute: typeof JogarCodigoRoute
@@ -86,6 +104,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro': {
@@ -121,6 +146,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRouteRoute: AppRouteRoute,
   CadastroRoute: CadastroRoute,
   LoginRoute: LoginRoute,
   JogarCodigoRoute: JogarCodigoRoute,
