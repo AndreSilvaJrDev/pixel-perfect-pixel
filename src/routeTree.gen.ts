@@ -15,10 +15,12 @@ import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppBibliotecaRouteImport } from './routes/app/biblioteca'
+import { Route as AppConfiguracoesRouteImport } from './routes/app/configuracoes'
 import { Route as AppCriarRouteImport } from './routes/app/criar'
 import { Route as AppResultadosRouteImport } from './routes/app/resultados'
 import { Route as JogarIndexRouteImport } from './routes/jogar/index'
 import { Route as JogarCodigoRouteImport } from './routes/jogar/$codigo'
+import { Route as AppAtividadeIdRouteImport } from './routes/app/atividade/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -50,6 +52,11 @@ const AppBibliotecaRoute = AppBibliotecaRouteImport.update({
   path: '/biblioteca',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppConfiguracoesRoute = AppConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppCriarRoute = AppCriarRouteImport.update({
   id: '/criar',
   path: '/criar',
@@ -70,6 +77,11 @@ const JogarCodigoRoute = JogarCodigoRouteImport.update({
   path: '/jogar/$codigo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAtividadeIdRoute = AppAtividadeIdRouteImport.update({
+  id: '/atividade/$id',
+  path: '/atividade/$id',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,22 +89,26 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/app/biblioteca': typeof AppBibliotecaRoute
+  '/app/configuracoes': typeof AppConfiguracoesRoute
   '/app/criar': typeof AppCriarRoute
   '/app/resultados': typeof AppResultadosRoute
   '/jogar/$codigo': typeof JogarCodigoRoute
   '/app/': typeof AppIndexRoute
   '/jogar/': typeof JogarIndexRoute
+  '/app/atividade/$id': typeof AppAtividadeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/app/biblioteca': typeof AppBibliotecaRoute
+  '/app/configuracoes': typeof AppConfiguracoesRoute
   '/app/criar': typeof AppCriarRoute
   '/app/resultados': typeof AppResultadosRoute
   '/jogar/$codigo': typeof JogarCodigoRoute
   '/app': typeof AppIndexRoute
   '/jogar': typeof JogarIndexRoute
+  '/app/atividade/$id': typeof AppAtividadeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,11 +117,13 @@ export interface FileRoutesById {
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/app/biblioteca': typeof AppBibliotecaRoute
+  '/app/configuracoes': typeof AppConfiguracoesRoute
   '/app/criar': typeof AppCriarRoute
   '/app/resultados': typeof AppResultadosRoute
   '/jogar/$codigo': typeof JogarCodigoRoute
   '/app/': typeof AppIndexRoute
   '/jogar/': typeof JogarIndexRoute
+  '/app/atividade/$id': typeof AppAtividadeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,22 +133,26 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/app/biblioteca'
+    | '/app/configuracoes'
     | '/app/criar'
     | '/app/resultados'
     | '/jogar/$codigo'
     | '/app/'
     | '/jogar/'
+    | '/app/atividade/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/cadastro'
     | '/login'
     | '/app/biblioteca'
+    | '/app/configuracoes'
     | '/app/criar'
     | '/app/resultados'
     | '/jogar/$codigo'
     | '/app'
     | '/jogar'
+    | '/app/atividade/$id'
   id:
     | '__root__'
     | '/'
@@ -138,11 +160,13 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/app/biblioteca'
+    | '/app/configuracoes'
     | '/app/criar'
     | '/app/resultados'
     | '/jogar/$codigo'
     | '/app/'
     | '/jogar/'
+    | '/app/atividade/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -198,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBibliotecaRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/configuracoes': {
+      id: '/app/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/app/configuracoes'
+      preLoaderRoute: typeof AppConfiguracoesRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/app/criar': {
       id: '/app/criar'
       path: '/criar'
@@ -226,21 +257,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JogarCodigoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/atividade/$id': {
+      id: '/app/atividade/$id'
+      path: '/atividade/$id'
+      fullPath: '/app/atividade/$id'
+      preLoaderRoute: typeof AppAtividadeIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface AppRouteRouteChildren {
   AppBibliotecaRoute: typeof AppBibliotecaRoute
+  AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppCriarRoute: typeof AppCriarRoute
   AppResultadosRoute: typeof AppResultadosRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAtividadeIdRoute: typeof AppAtividadeIdRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppBibliotecaRoute: AppBibliotecaRoute,
+  AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppCriarRoute: AppCriarRoute,
   AppResultadosRoute: AppResultadosRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAtividadeIdRoute: AppAtividadeIdRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

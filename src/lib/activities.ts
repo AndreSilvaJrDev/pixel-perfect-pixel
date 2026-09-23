@@ -50,7 +50,9 @@ export const activitiesQuery = queryOptions({
   queryFn: async (): Promise<Activity[]> => {
     const { data, error } = await supabase
       .from("activities")
-      .select("id,title,subject,grade,topic,difficulty,game_mode,is_demo,created_at,questions(count)")
+      .select(
+        "id,title,subject,grade,topic,difficulty,game_mode,is_demo,created_at,questions(count)",
+      )
       .order("created_at", { ascending: false });
     if (error) throw error;
     return (data ?? []) as unknown as Activity[];
