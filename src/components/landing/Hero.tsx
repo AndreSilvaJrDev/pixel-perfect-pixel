@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { QrCode, Smartphone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-professor-play.jpg";
+import heroAsset from "@/assets/hero-professor-play.png.asset.json";
 
 export function Hero() {
   return (
@@ -46,11 +46,12 @@ export function Hero() {
         <div className="relative">
           <div className="absolute -inset-3 rounded-[2rem] bg-highlight/25" aria-hidden="true" />
           <img
-            src={heroImage}
+            src={heroAsset.url}
             alt="Professor Play no computador com QR Code, celulares dos alunos e ranking da turma"
-            width={1280}
-            height={960}
-            className="relative w-full rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-lift)]"
+            width={1456}
+            height={1088}
+            loading="eager"
+            className="relative mx-auto w-full max-w-lg rounded-[1.75rem] border border-border bg-card object-contain shadow-[var(--shadow-lift)] lg:max-w-none"
           />
         </div>
       </div>

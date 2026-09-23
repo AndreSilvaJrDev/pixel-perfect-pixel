@@ -1,4 +1,4 @@
-import { Flag, Swords, ToggleLeft } from "lucide-react";
+import { Flag, Ropes, Swords, ToggleLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const modes = [
@@ -20,6 +20,12 @@ const modes = [
     text: "Cada acerto faz o aluno avançar na pista da turma.",
     status: "Na V1",
   },
+  {
+    icon: Ropes,
+    name: "Cabo de Guerra",
+    text: "Dois times. Cada acerto puxa a corda para o lado da equipe.",
+    status: "Novo",
+  },
 ];
 
 export function GameModes() {
@@ -30,7 +36,7 @@ export function GameModes() {
         <p className="mt-3 max-w-2xl text-muted-foreground">
           Poucos modos, bem feitos, que funcionam em qualquer celular.
         </p>
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {modes.map((mode) => (
             <article
               key={mode.name}
