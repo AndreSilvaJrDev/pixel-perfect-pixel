@@ -71,6 +71,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_generations: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          question_count: number
+          subject: string | null
+          topic: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          question_count?: number
+          subject?: string | null
+          topic?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          question_count?: number
+          subject?: string | null
+          topic?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       answers: {
         Row: {
           created_at: string
