@@ -24,6 +24,11 @@ export type Database = {
           is_demo: boolean
           owner_id: string
           subject: string
+          team_a_color: string
+          team_a_name: string
+          team_b_color: string
+          team_b_name: string
+          team_distribution: string
           title: string
           topic: string | null
           updated_at: string
@@ -37,6 +42,11 @@ export type Database = {
           is_demo?: boolean
           owner_id: string
           subject: string
+          team_a_color?: string
+          team_a_name?: string
+          team_b_color?: string
+          team_b_name?: string
+          team_distribution?: string
           title: string
           topic?: string | null
           updated_at?: string
@@ -50,6 +60,11 @@ export type Database = {
           is_demo?: boolean
           owner_id?: string
           subject?: string
+          team_a_color?: string
+          team_a_name?: string
+          team_b_color?: string
+          team_b_name?: string
+          team_distribution?: string
           title?: string
           topic?: string | null
           updated_at?: string
@@ -192,6 +207,7 @@ export type Database = {
           nickname: string
           score: number
           session_id: string
+          team: string | null
         }
         Insert: {
           id?: string
@@ -199,6 +215,7 @@ export type Database = {
           nickname: string
           score?: number
           session_id: string
+          team?: string | null
         }
         Update: {
           id?: string
@@ -206,6 +223,7 @@ export type Database = {
           nickname?: string
           score?: number
           session_id?: string
+          team?: string | null
         }
         Relationships: [
           {
