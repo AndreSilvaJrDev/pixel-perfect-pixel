@@ -1,4 +1,4 @@
-import { Flag, Ropes, Swords, ToggleLeft } from "lucide-react";
+import { Cable, Flag, Swords, ToggleLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const modes = [
@@ -21,7 +21,7 @@ const modes = [
     status: "Na V1",
   },
   {
-    icon: Ropes,
+    icon: Cable,
     name: "Cabo de Guerra",
     text: "Dois times. Cada acerto puxa a corda para o lado da equipe.",
     status: "Novo",
