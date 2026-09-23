@@ -91,8 +91,11 @@ function TeamScore({
   return (
     <div className={align === "right" ? "text-right" : "text-left"}>
       <span
-        className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold text-white"
-        style={{ backgroundColor: teamColorVar(team.color) }}
+        className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold"
+        style={{
+          backgroundColor: teamColorVar(team.color),
+          color: "var(--primary-foreground)",
+        }}
       >
         {team.name}
       </span>
