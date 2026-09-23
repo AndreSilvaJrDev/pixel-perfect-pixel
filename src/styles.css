@@ -100,6 +100,13 @@
   --destructive: oklch(0.58 0.22 22);
   --destructive-foreground: oklch(0.99 0.005 260);
 
+  /* cores de time (modo Cabo de Guerra) */
+  --team-azul: oklch(0.55 0.22 262);
+  --team-vermelho: oklch(0.58 0.22 22);
+  --team-roxo: oklch(0.55 0.22 300);
+  --team-amarelo: oklch(0.82 0.17 90);
+  --team-verde: oklch(0.6 0.15 155);
+
   --border: oklch(0.91 0.015 265);
   --input: oklch(0.91 0.015 265);
   --ring: oklch(0.55 0.22 262);

@@ -10,6 +10,11 @@ export type Activity = {
   difficulty: string;
   game_mode: string;
   is_demo: boolean;
+  team_a_name: string;
+  team_b_name: string;
+  team_a_color: string;
+  team_b_color: string;
+  team_distribution: string;
   created_at: string;
   questions: { count: number }[];
 };
@@ -35,7 +40,47 @@ export const GAME_MODES = [
   { value: "batalha", label: "Batalha do Saber" },
   { value: "vf", label: "Verdadeiro ou Falso" },
   { value: "corrida", label: "Corrida do Saber" },
+  { value: "cabo", label: "Cabo de Guerra" },
 ] as const;
+
+/** Modos jogados em equipe (dois times disputando pontos). */
+export const TEAM_GAME_MODES = ["cabo"] as const;
+
+export function isTeamMode(gameMode: string) {
+  return (TEAM_GAME_MODES as readonly string[]).includes(gameMode);
+}
+
+export const TEAM_COLORS = [
+  { value: "azul", label: "Azul" },
+  { value: "vermelho", label: "Vermelho" },
+  { value: "roxo", label: "Roxo" },
+  { value: "amarelo", label: "Amarelo" },
+  { value: "verde", label: "Verde" },
+] as const;
+
+export function teamColorVar(color: string) {
+  const known = TEAM_COLORS.some((item) => item.value === color);
+  return `var(--team-${known ? color : "azul"})`;
+}
+
+export const TEAM_DISTRIBUTIONS = [
+  { value: "automatica", label: "Automática", hint: "O sistema divide a turma nos dois times." },
+  { value: "manual", label: "Manual", hint: "O professor move os alunos no lobby." },
+] as const;
+
+export type TeamSetup = { name: string; color: string };
+
+export function teamsFromActivity(activity: {
+  team_a_name?: string | null;
+  team_b_name?: string | null;
+  team_a_color?: string | null;
+  team_b_color?: string | null;
+}): [TeamSetup, TeamSetup] {
+  return [
+    { name: activity.team_a_name || "Time Azul", color: activity.team_a_color || "azul" },
+    { name: activity.team_b_name || "Time Vermelho", color: activity.team_b_color || "vermelho" },
+  ];
+}
 
 export function gameModeLabel(value: string) {
   return GAME_MODES.find((mode) => mode.value === value)?.label ?? value;
@@ -51,7 +96,7 @@ export const activitiesQuery = queryOptions({
     const { data, error } = await supabase
       .from("activities")
       .select(
-        "id,title,subject,grade,topic,difficulty,game_mode,is_demo,created_at,questions(count)",
+        "id,title,subject,grade,topic,difficulty,game_mode,is_demo,created_at,team_a_name,team_b_name,team_a_color,team_b_color,team_distribution,questions(count)",
       )
       .order("created_at", { ascending: false });
     if (error) throw error;
@@ -65,7 +110,9 @@ export function activityQuery(id: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("activities")
-        .select("id,title,subject,grade,topic,difficulty,game_mode,is_demo,created_at")
+        .select(
+          "id,title,subject,grade,topic,difficulty,game_mode,is_demo,created_at,team_a_name,team_b_name,team_a_color,team_b_color,team_distribution",
+        )
         .eq("id", id)
         .maybeSingle();
       if (error) throw error;
