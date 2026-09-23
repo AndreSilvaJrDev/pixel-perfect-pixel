@@ -6,7 +6,10 @@ import heroImage from "@/assets/hero-professor-play.jpg";
 export function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-border bg-background">
-      <div className="surface-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+      <div
+        className="surface-grid pointer-events-none absolute inset-0 opacity-60"
+        aria-hidden="true"
+      />
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:py-20">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-muted-foreground">

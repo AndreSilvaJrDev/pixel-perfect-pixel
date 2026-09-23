@@ -65,8 +65,8 @@ function Configuracoes() {
           <div className="mt-3 space-y-2">
             <Badge variant="secondary">Fase de lançamento</Badge>
             <p className="text-sm text-muted-foreground">
-              Durante o lançamento o acesso está liberado para você testar. O plano definitivo é
-              R$ 39,90, pagamento único.
+              Durante o lançamento o acesso está liberado para você testar. O plano definitivo é R$
+              39,90, pagamento único.
             </p>
           </div>
         )}
