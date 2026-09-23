@@ -1,7 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, Play } from "lucide-react";
-import { activityQuery, difficultyLabel, gameModeLabel } from "@/lib/activities";
+import {
+  activityQuery,
+  difficultyLabel,
+  gameModeLabel,
+  isTeamMode,
+  teamsFromActivity,
+} from "@/lib/activities";
+import { TugOfWar } from "@/components/game/TugOfWar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,6 +45,7 @@ function AtividadeDetalhe() {
   }
 
   const { activity, questions } = data;
+  const [teamA, teamB] = teamsFromActivity(activity);
 
   return (
     <div className="space-y-6">
@@ -66,6 +74,16 @@ function AtividadeDetalhe() {
           Começar partida
         </Button>
       </div>
+
+      {isTeamMode(activity.game_mode) ? (
+        <div className="space-y-3">
+          <TugOfWar teamA={teamA} teamB={teamB} scoreA={0} scoreB={0} playersA={0} playersB={0} />
+          <p className="text-sm text-muted-foreground">
+            A corda começa no meio. Cada acerto puxa para o lado do time. A partida ao vivo entra na
+            próxima entrega.
+          </p>
+        </div>
+      ) : null}
 
       {questions.length > 0 ? (
         <ol className="space-y-4">
