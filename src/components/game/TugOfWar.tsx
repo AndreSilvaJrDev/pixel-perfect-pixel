@@ -85,7 +85,7 @@ function TeamScore({
 }: {
   team: TeamSetup;
   score: number;
-  players?: number;
+  players?: number | undefined;
   align: "left" | "right";
 }) {
   return (
