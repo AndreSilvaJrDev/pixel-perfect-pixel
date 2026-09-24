@@ -270,7 +270,6 @@ function CriarAtividade() {
               onRegenerate={() => void handleRegenerateOne(question)}
               startEditing={question.prompt === ""}
             />
-
           ))}
         </ul>
 
