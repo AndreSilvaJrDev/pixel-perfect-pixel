@@ -27,10 +27,7 @@ import {
   TOPIC_MAX_LENGTH,
   type DraftQuestion,
 } from "@/lib/ai-questions";
-import {
-  generateActivityWithAI,
-  regenerateQuestionWithAI,
-} from "@/lib/ai-questions.functions";
+import { generateActivityWithAI, regenerateQuestionWithAI } from "@/lib/ai-questions.functions";
 import { TugOfWar } from "@/components/game/TugOfWar";
 import { GenerationLoader } from "@/components/criar/GenerationLoader";
 import { QuestionEditor } from "@/components/criar/QuestionEditor";
@@ -459,9 +456,7 @@ function CriarAtividade() {
                       }
                     >
                       <p className="font-bold">{mode.label}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {MODE_HINTS[mode.value]}
-                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">{MODE_HINTS[mode.value]}</p>
                     </button>
                   );
                 })}
