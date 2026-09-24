@@ -189,36 +189,77 @@ export type Database = {
         }
         Relationships: []
       }
+      game_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          player_id: string | null
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          player_id?: string | null
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          player_id?: string | null
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "game_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_sessions: {
         Row: {
           activity_id: string
+          allow_late_join: boolean
           created_at: string
           ended_at: string | null
+          expires_at: string
           host_id: string
           id: string
           pin: string
           started_at: string | null
           status: string
+          updated_at: string
         }
         Insert: {
           activity_id: string
+          allow_late_join?: boolean
           created_at?: string
           ended_at?: string | null
+          expires_at?: string
           host_id: string
           id?: string
           pin: string
           started_at?: string | null
           status?: string
+          updated_at?: string
         }
         Update: {
           activity_id?: string
+          allow_late_join?: boolean
           created_at?: string
           ended_at?: string | null
+          expires_at?: string
           host_id?: string
           id?: string
           pin?: string
           started_at?: string | null
           status?: string
+          updated_at?: string
         }
         Relationships: [
           {
@@ -234,26 +275,32 @@ export type Database = {
         Row: {
           id: string
           joined_at: string
+          last_seen_at: string
           nickname: string
           score: number
           session_id: string
           team: string | null
+          token_hash: string | null
         }
         Insert: {
           id?: string
           joined_at?: string
+          last_seen_at?: string
           nickname: string
           score?: number
           session_id: string
           team?: string | null
+          token_hash?: string | null
         }
         Update: {
           id?: string
           joined_at?: string
+          last_seen_at?: string
           nickname?: string
           score?: number
           session_id?: string
           team?: string | null
+          token_hash?: string | null
         }
         Relationships: [
           {
@@ -338,7 +385,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_game_session: { Args: { _activity_id: string }; Returns: string }
+      get_player_state: {
+        Args: { _player_id: string; _token: string }
+        Returns: Json
+      }
+      join_game: {
+        Args: { _nickname: string; _pin: string; _token?: string }
+        Returns: Json
+      }
+      lookup_game_pin: { Args: { _pin: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
