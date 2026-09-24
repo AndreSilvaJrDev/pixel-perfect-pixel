@@ -84,7 +84,10 @@ function userPrompt(input: GenerateInput, extra?: { avoidPrompts?: string[]; sin
   return lines.join("\n");
 }
 
-async function callModel(input: GenerateInput, extra?: { avoidPrompts?: string[]; single?: boolean }) {
+async function callModel(
+  input: GenerateInput,
+  extra?: { avoidPrompts?: string[]; single?: boolean },
+) {
   const key = requireLovableApiKey();
   const runIdFetch = createLovableAiGatewayRunIdFetch();
   const lovable = createOpenAI({
@@ -210,10 +213,13 @@ export async function generateSingleQuestion(input: GenerateInput, avoidPrompts:
   const seen = new Set(trimmed.map(normalizeKey));
 
   for (let attempt = 0; attempt < 2; attempt++) {
-    const result = await callModel({ ...input, questionCount: 1 }, {
-      single: true,
-      avoidPrompts: trimmed,
-    });
+    const result = await callModel(
+      { ...input, questionCount: 1 },
+      {
+        single: true,
+        avoidPrompts: trimmed,
+      },
+    );
     const [question] = validateQuestions(result?.questions ?? [], input, seen);
     if (question) return question;
   }
