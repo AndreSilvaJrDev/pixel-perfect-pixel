@@ -1,4 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
+import { createGameSession } from "@/lib/room";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, Play } from "lucide-react";
 import {
@@ -28,6 +31,18 @@ export const Route = createFileRoute("/app/atividade/$id")({
 function AtividadeDetalhe() {
   const { id } = Route.useParams();
   const { data, isLoading } = useQuery(activityQuery(id));
+  const navigate = useNavigate();
+  const [starting, setStarting] = useState(false);
+  async function startGame() {
+    setStarting(true);
+    try {
+      const sessionId = await createGameSession(id);
+      navigate({ to: "/app/sala/$id", params: { id: sessionId } });
+    } catch {
+      toast.error("Não foi possível criar a sala. Tente de novo.");
+      setStarting(false);
+    }
+  }
 
   if (isLoading) {
     return <Skeleton className="h-64 rounded-2xl" />;
@@ -69,9 +84,14 @@ function AtividadeDetalhe() {
             {gameModeLabel(activity.game_mode)} · {questions.length} perguntas
           </p>
         </div>
-        <Button variant="hero" size="lg" disabled title="Disponível na próxima entrega">
+        <Button
+          variant="hero"
+          size="lg"
+          disabled={starting || questions.length === 0}
+          onClick={() => void startGame()}
+        >
           <Play className="size-4" aria-hidden="true" />
-          Começar partida
+          {starting ? "Criando sala..." : "Começar partida"}
         </Button>
       </div>
 
@@ -79,8 +99,7 @@ function AtividadeDetalhe() {
         <div className="space-y-3">
           <TugOfWar teamA={teamA} teamB={teamB} scoreA={0} scoreB={0} playersA={0} playersB={0} />
           <p className="text-sm text-muted-foreground">
-            A corda começa no meio. Cada acerto puxa para o lado do time. A partida ao vivo entra na
-            próxima entrega.
+            A corda começa no meio. Cada acerto puxa para o lado do time.
           </p>
         </div>
       ) : null}

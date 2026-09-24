@@ -234,7 +234,13 @@ function NicknameForm({
           </p>
         ) : null}
       </div>
-      <Button type="submit" variant="hero" size="xl" className="mt-6 w-full" disabled={busy || clean.length < 2}>
+      <Button
+        type="submit"
+        variant="hero"
+        size="xl"
+        className="mt-6 w-full"
+        disabled={busy || clean.length < 2}
+      >
         {busy ? "Entrando..." : "Entrar no jogo"}
       </Button>
     </form>
@@ -270,7 +276,9 @@ function Waiting({ state }: { state: PlayerState }) {
         {started ? (
           <>
             <Rocket className="mx-auto size-10 text-primary" aria-hidden="true" />
-            <p role="status" className="mt-4 text-3xl font-extrabold">O jogo começou!</p>
+            <p role="status" className="mt-4 text-3xl font-extrabold">
+              O jogo começou!
+            </p>
             <p className="mt-2 text-muted-foreground">Prepare-se para a primeira pergunta.</p>
           </>
         ) : (
@@ -280,7 +288,10 @@ function Waiting({ state }: { state: PlayerState }) {
             <p className="mt-2 break-words font-display text-2xl font-bold text-primary">
               {state.nickname}
             </p>
-            <p role="status" className="mt-4 flex items-center justify-center gap-2 text-muted-foreground">
+            <p
+              role="status"
+              className="mt-4 flex items-center justify-center gap-2 text-muted-foreground"
+            >
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
               Aguardando o professor começar...
             </p>

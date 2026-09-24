@@ -90,13 +90,18 @@ async function rpc(name: string, args: Json): Promise<Json> {
 export type PinLookup =
   | { status: "open"; title: string; game_mode: string }
   | { status: "not_found" | "finished" | "expired" | "started" };
-export const lookupPin = (pin: string) => rpc("lookup_game_pin", { _pin: pin }) as Promise<PinLookup>;
+export const lookupPin = (pin: string) =>
+  rpc("lookup_game_pin", { _pin: pin }) as Promise<PinLookup>;
 
 export type JoinResult =
   | { player_id: string; session_id: string; token: string; reconnected: boolean; error?: never }
   | { error: string };
 export const joinGame = (pin: string, nickname: string, token?: string | null) =>
-  rpc("join_game", { _pin: pin, _nickname: nickname, _token: token ?? null }) as Promise<JoinResult>;
+  rpc("join_game", {
+    _pin: pin,
+    _nickname: nickname,
+    _token: token ?? null,
+  }) as Promise<JoinResult>;
 
 export type PlayerState = {
   error?: string;

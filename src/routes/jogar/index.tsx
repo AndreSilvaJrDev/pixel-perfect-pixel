@@ -12,7 +12,10 @@ export const Route = createFileRoute("/jogar/")({
       { title: "Entrar no jogo — Professor Play" },
       { name: "description", content: "Digite o PIN da sua turma e entre no jogo pelo celular." },
       { property: "og:title", content: "Entrar no jogo — Professor Play" },
-      { property: "og:description", content: "Digite o PIN da sua turma e entre no jogo pelo celular." },
+      {
+        property: "og:description",
+        content: "Digite o PIN da sua turma e entre no jogo pelo celular.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -75,7 +78,13 @@ function JogarIndex() {
             </p>
           ) : null}
         </div>
-        <Button type="submit" variant="hero" size="xl" className="mt-6 w-full" disabled={!valid || busy}>
+        <Button
+          type="submit"
+          variant="hero"
+          size="xl"
+          className="mt-6 w-full"
+          disabled={!valid || busy}
+        >
           {busy ? "Procurando sala..." : "Continuar"}
         </Button>
       </form>
