@@ -268,7 +268,9 @@ function CriarAtividade() {
                 setQuestions((current) => current.filter((item) => item.id !== question.id))
               }
               onRegenerate={() => void handleRegenerateOne(question)}
+              startEditing={question.prompt === ""}
             />
+
           ))}
         </ul>
 
