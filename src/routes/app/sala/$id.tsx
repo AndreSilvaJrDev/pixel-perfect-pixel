@@ -2,14 +2,38 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
-import { ArrowLeftRight, Copy, Link2, Play, QrCode, Rocket, Square, Users, Wifi, WifiOff } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Copy,
+  Link2,
+  Play,
+  QrCode,
+  Rocket,
+  Square,
+  Users,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { TugOfWar } from "@/components/game/TugOfWar";
-import { gameModeLabel, isTeamMode, teamColorVar, teamsFromActivity, type TeamSetup } from "@/lib/activities";
-import { ROOM_EVENTS, SESSION_STATUS, isInGame, joinBaseUrl, joinUrl, roomChannelName } from "@/lib/room";
+import {
+  gameModeLabel,
+  isTeamMode,
+  teamColorVar,
+  teamsFromActivity,
+  type TeamSetup,
+} from "@/lib/activities";
+import {
+  ROOM_EVENTS,
+  SESSION_STATUS,
+  isInGame,
+  joinBaseUrl,
+  joinUrl,
+  roomChannelName,
+} from "@/lib/room";
 
 export const Route = createFileRoute("/app/sala/$id")({
   head: () => ({
@@ -17,7 +41,10 @@ export const Route = createFileRoute("/app/sala/$id")({
       { title: "Sala ao vivo — Professor Play" },
       { name: "description", content: "Mostre o PIN e o QR Code. Veja seus alunos entrando." },
       { property: "og:title", content: "Sala ao vivo — Professor Play" },
-      { property: "og:description", content: "Mostre o PIN e o QR Code. Veja seus alunos entrando." },
+      {
+        property: "og:description",
+        content: "Mostre o PIN e o QR Code. Veja seus alunos entrando.",
+      },
     ],
   }),
   component: SalaProfessor,
@@ -77,7 +104,9 @@ function SalaProfessor() {
   }, [id, loadPlayers]);
 
   useEffect(() => {
-    const channel = supabase.channel(roomChannelName(id), { config: { presence: { key: "host" } } });
+    const channel = supabase.channel(roomChannelName(id), {
+      config: { presence: { key: "host" } },
+    });
     channel
       .on("presence", { event: "sync" }, () => {
         setOnline(new Set(Object.keys(channel.presenceState()).filter((k) => k !== "host")));
@@ -145,14 +174,25 @@ function SalaProfessor() {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-muted-foreground">{gameModeLabel(activity.game_mode)}</p>
+          <p className="text-sm font-semibold text-muted-foreground">
+            {gameModeLabel(activity.game_mode)}
+          </p>
           <h1 className="text-2xl font-extrabold sm:text-3xl">{activity.title}</h1>
         </div>
         {!finished ? (
           confirmEnd ? (
-            <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Confirmar encerramento">
+            <div
+              className="flex flex-wrap items-center gap-2"
+              role="group"
+              aria-label="Confirmar encerramento"
+            >
               <span className="text-sm font-semibold">Encerrar para todos?</span>
-              <Button variant="destructive" size="sm" disabled={busy} onClick={() => void setStatus(SESSION_STATUS.FINISHED)}>
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={busy}
+                onClick={() => void setStatus(SESSION_STATUS.FINISHED)}
+              >
                 Sim, encerrar
               </Button>
               <Button variant="outline" size="sm" onClick={() => setConfirmEnd(false)}>
@@ -169,16 +209,33 @@ function SalaProfessor() {
       </header>
 
       {finished ? (
-        <Banner icon={<Square className="size-8" />} title="Partida encerrada" text="O PIN não aceita mais alunos." />
+        <Banner
+          icon={<Square className="size-8" />}
+          title="Partida encerrada"
+          text="O PIN não aceita mais alunos."
+        />
       ) : started ? (
-        <Banner icon={<Rocket className="size-8 text-primary" />} title="Partida iniciada" text="Os alunos já estão vendo a tela de início. As perguntas ao vivo chegam na próxima entrega." />
+        <Banner
+          icon={<Rocket className="size-8 text-primary" />}
+          title="Partida iniciada"
+          text="Os alunos já estão vendo a tela de início. As perguntas ao vivo chegam na próxima entrega."
+        />
       ) : (
         <section className="grid gap-6 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)] md:grid-cols-[1fr_auto] md:items-center">
           <div className="min-w-0">
-            <p className="text-sm font-bold uppercase tracking-wide text-muted-foreground">Entre em</p>
-            <p className="break-all font-display text-lg font-bold sm:text-2xl">{joinBaseUrl().replace(/^https?:\/\//, "")}</p>
-            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-muted-foreground">PIN</p>
-            <p className="font-display text-6xl font-extrabold tracking-[0.12em] text-primary sm:text-7xl" aria-label={`PIN ${session.pin.split("").join(" ")}`}>
+            <p className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+              Entre em
+            </p>
+            <p className="break-all font-display text-lg font-bold sm:text-2xl">
+              {joinBaseUrl().replace(/^https?:\/\//, "")}
+            </p>
+            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-muted-foreground">
+              PIN
+            </p>
+            <p
+              className="font-display text-6xl font-extrabold tracking-[0.12em] text-primary sm:text-7xl"
+              aria-label={`PIN ${session.pin.split("").join(" ")}`}
+            >
               {session.pin}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
@@ -204,10 +261,17 @@ function SalaProfessor() {
           <p className="flex items-center gap-2 text-2xl font-extrabold" aria-live="polite">
             <Users className="size-6 text-primary" aria-hidden="true" />
             {players.length} {players.length === 1 ? "jogador" : "jogadores"}
-            <span className="text-sm font-semibold text-muted-foreground">· {online.size} conectados</span>
+            <span className="text-sm font-semibold text-muted-foreground">
+              · {online.size} conectados
+            </span>
           </p>
           {!started && !finished ? (
-            <Button variant="hero" size="xl" disabled={players.length === 0 || busy} onClick={() => void setStatus(SESSION_STATUS.QUESTION)}>
+            <Button
+              variant="hero"
+              size="xl"
+              disabled={players.length === 0 || busy}
+              onClick={() => void setStatus(SESSION_STATUS.QUESTION)}
+            >
               <Play className="size-5" aria-hidden="true" /> Começar jogo
             </Button>
           ) : null}
@@ -255,7 +319,9 @@ function SalaProfessor() {
           <div className="mx-auto rounded-2xl bg-background p-4">
             <QRCodeSVG value={link} size={320} level="M" className="h-auto max-w-full" />
           </div>
-          <p className="font-display text-5xl font-extrabold tracking-[0.12em] text-primary">{session.pin}</p>
+          <p className="font-display text-5xl font-extrabold tracking-[0.12em] text-primary">
+            {session.pin}
+          </p>
         </DialogContent>
       </Dialog>
     </div>
@@ -264,7 +330,10 @@ function SalaProfessor() {
 
 function Banner({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
-    <section role="status" className="flex items-center gap-4 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+    <section
+      role="status"
+      className="flex items-center gap-4 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]"
+    >
       <span aria-hidden="true">{icon}</span>
       <div>
         <p className="text-2xl font-extrabold">{title}</p>
@@ -276,8 +345,14 @@ function Banner({ icon, title, text }: { icon: React.ReactNode; title: string; t
 
 function PlayerChip({ player, online }: { player: Player; online: boolean }) {
   return (
-    <li className={`flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-semibold ${online ? "" : "opacity-60"}`}>
-      {online ? <Wifi className="size-4 text-success" aria-hidden="true" /> : <WifiOff className="size-4 text-muted-foreground" aria-hidden="true" />}
+    <li
+      className={`flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-semibold ${online ? "" : "opacity-60"}`}
+    >
+      {online ? (
+        <Wifi className="size-4 text-success" aria-hidden="true" />
+      ) : (
+        <WifiOff className="size-4 text-muted-foreground" aria-hidden="true" />
+      )}
       {player.nickname}
       <span className="sr-only">{online ? "(conectado)" : "(desconectado)"}</span>
     </li>
@@ -300,23 +375,43 @@ function TeamColumn({
   onMove: (p: Player) => void;
 }) {
   return (
-    <div className="rounded-3xl border-4 bg-card p-5" style={{ borderColor: teamColorVar(team.color) }}>
+    <div
+      className="rounded-3xl border-4 bg-card p-5"
+      style={{ borderColor: teamColorVar(team.color) }}
+    >
       <p className="flex items-center justify-between text-lg font-extrabold uppercase">
         {team.name}
-        <span className="rounded-full px-3 py-1 text-sm text-primary-foreground" style={{ backgroundColor: teamColorVar(team.color) }}>
+        <span
+          className="rounded-full px-3 py-1 text-sm text-primary-foreground"
+          style={{ backgroundColor: teamColorVar(team.color) }}
+        >
           {players.length}
         </span>
       </p>
       <ul className="mt-4 space-y-2">
         {players.map((p) => (
-          <li key={p.id} className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2">
-            <span className={`flex min-w-0 items-center gap-2 font-semibold ${online.has(p.id) ? "" : "opacity-60"}`}>
-              {online.has(p.id) ? <Wifi className="size-4 shrink-0 text-success" aria-hidden="true" /> : <WifiOff className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
+          <li
+            key={p.id}
+            className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2"
+          >
+            <span
+              className={`flex min-w-0 items-center gap-2 font-semibold ${online.has(p.id) ? "" : "opacity-60"}`}
+            >
+              {online.has(p.id) ? (
+                <Wifi className="size-4 shrink-0 text-success" aria-hidden="true" />
+              ) : (
+                <WifiOff className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              )}
               <span className="truncate">{p.nickname}</span>
               <span className="sr-only">{online.has(p.id) ? "(conectado)" : "(desconectado)"}</span>
             </span>
             {canMove ? (
-              <Button variant="ghost" size="sm" onClick={() => onMove(p)} aria-label={`Mover ${p.nickname} para ${other.name}`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMove(p)}
+                aria-label={`Mover ${p.nickname} para ${other.name}`}
+              >
                 <ArrowLeftRight className="size-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Mover para {other.name}</span>
               </Button>
