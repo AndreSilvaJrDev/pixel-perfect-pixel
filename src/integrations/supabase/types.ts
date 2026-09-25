@@ -109,6 +109,7 @@ export type Database = {
           player_id: string
           question_id: string
           response_ms: number | null
+          score_awarded: number
           selected_index: number | null
           session_id: string
         }
@@ -119,6 +120,7 @@ export type Database = {
           player_id: string
           question_id: string
           response_ms?: number | null
+          score_awarded?: number
           selected_index?: number | null
           session_id: string
         }
@@ -129,6 +131,7 @@ export type Database = {
           player_id?: string
           question_id?: string
           response_ms?: number | null
+          score_awarded?: number
           selected_index?: number | null
           session_id?: string
         }
@@ -226,12 +229,19 @@ export type Database = {
           activity_id: string
           allow_late_join: boolean
           created_at: string
+          current_question: number
           ended_at: string | null
           expires_at: string
           host_id: string
           id: string
           pin: string
+          question_duration_s: number
+          question_ends_at: string | null
+          question_ids: string[] | null
+          question_started_at: string | null
+          results: Json | null
           started_at: string | null
+          state_version: number
           status: string
           updated_at: string
         }
@@ -239,12 +249,19 @@ export type Database = {
           activity_id: string
           allow_late_join?: boolean
           created_at?: string
+          current_question?: number
           ended_at?: string | null
           expires_at?: string
           host_id: string
           id?: string
           pin: string
+          question_duration_s?: number
+          question_ends_at?: string | null
+          question_ids?: string[] | null
+          question_started_at?: string | null
+          results?: Json | null
           started_at?: string | null
+          state_version?: number
           status?: string
           updated_at?: string
         }
@@ -252,12 +269,19 @@ export type Database = {
           activity_id?: string
           allow_late_join?: boolean
           created_at?: string
+          current_question?: number
           ended_at?: string | null
           expires_at?: string
           host_id?: string
           id?: string
           pin?: string
+          question_duration_s?: number
+          question_ends_at?: string | null
+          question_ids?: string[] | null
+          question_started_at?: string | null
+          results?: Json | null
           started_at?: string | null
+          state_version?: number
           status?: string
           updated_at?: string
         }
@@ -273,6 +297,8 @@ export type Database = {
       }
       players: {
         Row: {
+          correct_count: number
+          correct_time_ms: number
           id: string
           joined_at: string
           last_seen_at: string
@@ -283,6 +309,8 @@ export type Database = {
           token_hash: string | null
         }
         Insert: {
+          correct_count?: number
+          correct_time_ms?: number
           id?: string
           joined_at?: string
           last_seen_at?: string
@@ -293,6 +321,8 @@ export type Database = {
           token_hash?: string | null
         }
         Update: {
+          correct_count?: number
+          correct_time_ms?: number
           id?: string
           joined_at?: string
           last_seen_at?: string
@@ -385,16 +415,50 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _assert_host: { Args: { _sid: string }; Returns: undefined }
+      _player_session: {
+        Args: { _player_id: string; _token: string }
+        Returns: string
+      }
+      _room_close_question: { Args: { _sid: string }; Returns: undefined }
+      _room_results: { Args: { _sid: string }; Returns: Json }
+      _room_tick: { Args: { _sid: string }; Returns: undefined }
+      _room_view: {
+        Args: { _host: boolean; _player_id: string; _sid: string }
+        Returns: Json
+      }
+      calculate_score: {
+        Args: { _correct: boolean; _duration_s: number; _elapsed_ms: number }
+        Returns: number
+      }
       create_game_session: { Args: { _activity_id: string }; Returns: string }
       get_player_state: {
         Args: { _player_id: string; _token: string }
         Returns: Json
       }
+      host_close_question: { Args: { _sid: string }; Returns: Json }
+      host_finish_game: { Args: { _sid: string }; Returns: Json }
+      host_get_state: { Args: { _sid: string }; Returns: Json }
+      host_next_question: {
+        Args: { _from_index: number; _sid: string }
+        Returns: Json
+      }
+      host_show_leaderboard: { Args: { _sid: string }; Returns: Json }
+      host_start_game: { Args: { _sid: string }; Returns: Json }
       join_game: {
         Args: { _nickname: string; _pin: string; _token?: string }
         Returns: Json
       }
       lookup_game_pin: { Args: { _pin: string }; Returns: Json }
+      submit_answer: {
+        Args: {
+          _player_id: string
+          _question_id: string
+          _selected: number
+          _token: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
