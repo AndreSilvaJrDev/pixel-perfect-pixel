@@ -14,9 +14,9 @@ type TugOfWarProps = {
  * A corda se desloca para o lado do time com mais pontos.
  */
 export function TugOfWar({ teamA, teamB, scoreA, scoreB, playersA, playersB }: TugOfWarProps) {
-  const total = scoreA + scoreB;
-  // 50% = empate. Vantagem máxima visual em 92% / 8%.
-  const ratio = total === 0 ? 0.5 : scoreA / total;
+  // 50% = empate. Escala mínima de 6.000 pontos evita que o primeiro acerto leve a corda ao extremo.
+  const scale = Math.max(scoreA + scoreB, 6000);
+  const ratio = 0.5 + (scoreA - scoreB) / (2 * scale);
   const knotPercent = Math.min(92, Math.max(8, ratio * 100));
 
   const leading = scoreA === scoreB ? null : scoreA > scoreB ? teamA : teamB;

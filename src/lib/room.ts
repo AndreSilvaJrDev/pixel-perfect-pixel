@@ -25,6 +25,7 @@ export const ROOM_EVENTS = {
   SESSION_UPDATED: "SESSION_UPDATED",
   TEAM_UPDATED: "TEAM_UPDATED",
   PLAYER_JOINED: "PLAYER_JOINED",
+  ANSWER_SUBMITTED: "ANSWER_SUBMITTED",
 } as const;
 
 export const roomChannelName = (sessionId: string) => `room:${sessionId}`;
@@ -103,22 +104,101 @@ export const joinGame = (pin: string, nickname: string, token?: string | null) =
     _token: token ?? null,
   }) as Promise<JoinResult>;
 
-export type PlayerState = {
-  error?: string;
+export type RankingRow = {
   id: string;
   nickname: string;
   team: "a" | "b" | null;
+  score: number;
+  correct_count: number;
+  rank: number;
+};
+export type RoomResults = {
+  participants: number;
+  questions_asked: number;
+  total_answers: number;
+  accuracy_pct: number;
+  duration_s: number;
+  team_a_score: number;
+  team_b_score: number;
+  per_question: { position: number; prompt: string; correct: number; answered: number }[];
+  ranking: Omit<RankingRow, "id">[];
+};
+/** Visão autorizada da sala, vinda sempre do servidor. correct_index/explanation só existem após o fechamento. */
+export type RoomView = {
+  error?: string;
   session_id: string;
   status: SessionStatus;
+  version: number;
+  server_now: string;
   title: string;
   game_mode: string;
+  pin: string;
   team_a_name: string;
   team_b_name: string;
   team_a_color: string;
   team_b_color: string;
+  question_index: number;
+  total_questions: number;
+  players_count: number;
+  question_started_at: string | null;
+  question_ends_at: string | null;
+  duration_s: number;
+  max_score: number;
+  team_a_score: number;
+  team_b_score: number;
+  answered_count?: number;
+  question?: PlayerQuestionPayload;
+  correct_index?: number;
+  explanation?: string | null;
+  distribution?: number[];
+  round_team_a?: number;
+  round_team_b?: number;
+  ranking: RankingRow[];
+  results?: RoomResults | null;
+  me?: {
+    id: string;
+    nickname: string;
+    team: "a" | "b" | null;
+    score: number;
+    correct_count: number;
+    rank: number;
+    answered?: boolean;
+    selected_index?: number;
+    is_correct?: boolean;
+    score_awarded?: number;
+  };
 };
+/** Mantido por compatibilidade com a R2. */
+export type PlayerState = RoomView;
+
 export const getPlayerState = (playerId: string, token: string) =>
-  rpc("get_player_state", { _player_id: playerId, _token: token }) as Promise<PlayerState>;
+  rpc("get_player_state", { _player_id: playerId, _token: token }) as Promise<RoomView>;
+
+export type SubmitResult = { ok?: boolean; already?: boolean; selected_index?: number; error?: string };
+export const submitAnswer = (playerId: string, token: string, questionId: string, selected: number) =>
+  rpc("submit_answer", {
+    _player_id: playerId,
+    _token: token,
+    _question_id: questionId,
+    _selected: selected,
+  }) as Promise<SubmitResult>;
+
+/** Ações do professor: o servidor valida dono e estado; chamadas repetidas não duplicam transições. */
+export const hostRpc = {
+  state: (sid: string) => rpc("host_get_state", { _sid: sid }) as Promise<RoomView>,
+  start: (sid: string) => rpc("host_start_game", { _sid: sid }) as Promise<RoomView>,
+  closeQuestion: (sid: string) => rpc("host_close_question", { _sid: sid }) as Promise<RoomView>,
+  leaderboard: (sid: string) => rpc("host_show_leaderboard", { _sid: sid }) as Promise<RoomView>,
+  next: (sid: string, fromIndex: number) =>
+    rpc("host_next_question", { _sid: sid, _from_index: fromIndex }) as Promise<RoomView>,
+  finish: (sid: string) => rpc("host_finish_game", { _sid: sid }) as Promise<RoomView>,
+};
+
+/** Diferença entre o relógio do servidor e o do aparelho (ms). */
+export const clockOffset = (view: Pick<RoomView, "server_now">) =>
+  Date.parse(view.server_now) - Date.now();
+
+export const formatPoints = (n: number) => n.toLocaleString("pt-BR");
 
 export const createGameSession = async (activityId: string) =>
   (await (
