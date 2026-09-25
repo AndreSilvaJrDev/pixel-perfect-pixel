@@ -133,7 +133,10 @@ function SalaProfessor() {
     setBusy(true);
     const { error } = await supabase.from("game_sessions").update({ status }).eq("id", id);
     setBusy(false);
-    if (error) return toast.error("Não foi possível atualizar a sala.");
+    if (error) {
+      toast.error("Não foi possível atualizar a sala.");
+      return;
+    }
     setSession((s) => (s ? { ...s, status } : s));
     notify(ROOM_EVENTS.SESSION_UPDATED);
   }
@@ -144,7 +147,8 @@ function SalaProfessor() {
     const { error } = await supabase.from("players").update({ team }).eq("id", p.id);
     if (error) {
       toast.error("Não foi possível mover o jogador.");
-      return loadPlayers();
+      await loadPlayers();
+      return;
     }
     notify(ROOM_EVENTS.TEAM_UPDATED);
   }
