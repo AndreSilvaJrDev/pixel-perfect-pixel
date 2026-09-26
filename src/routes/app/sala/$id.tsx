@@ -53,7 +53,10 @@ export const Route = createFileRoute("/app/sala/$id")({
       { title: "Sala ao vivo — Professor Play" },
       { name: "description", content: "Conduza a partida: perguntas, tempo, respostas e ranking." },
       { property: "og:title", content: "Sala ao vivo — Professor Play" },
-      { property: "og:description", content: "Conduza a partida: perguntas, tempo, respostas e ranking." },
+      {
+        property: "og:description",
+        content: "Conduza a partida: perguntas, tempo, respostas e ranking.",
+      },
     ],
   }),
   component: SalaProfessor,
@@ -78,7 +81,11 @@ function SalaProfessor() {
     setOffset(clockOffset(v));
     // qualquer mudança de estado (inclusive fechamento automático) é avisada aos alunos
     if (versionRef.current !== null && versionRef.current !== v.version) {
-      void channelRef.current?.send({ type: "broadcast", event: ROOM_EVENTS.SESSION_UPDATED, payload: {} });
+      void channelRef.current?.send({
+        type: "broadcast",
+        event: ROOM_EVENTS.SESSION_UPDATED,
+        payload: {},
+      });
     }
     versionRef.current = v.version;
   }, []);
@@ -96,7 +103,9 @@ function SalaProfessor() {
   }, [refresh]);
 
   useEffect(() => {
-    const channel = supabase.channel(roomChannelName(id), { config: { presence: { key: "host" } } });
+    const channel = supabase.channel(roomChannelName(id), {
+      config: { presence: { key: "host" } },
+    });
     channel
       .on("presence", { event: "sync" }, () => {
         setOnline(new Set(Object.keys(channel.presenceState()).filter((k) => k !== "host")));
@@ -163,12 +172,18 @@ function SalaProfessor() {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-muted-foreground">{gameModeLabel(view.game_mode)}</p>
+          <p className="text-sm font-semibold text-muted-foreground">
+            {gameModeLabel(view.game_mode)}
+          </p>
           <h1 className="break-words text-2xl font-extrabold sm:text-3xl">{view.title}</h1>
         </div>
         {!finished ? (
           confirmEnd ? (
-            <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Confirmar encerramento">
+            <div
+              className="flex flex-wrap items-center gap-2"
+              role="group"
+              aria-label="Confirmar encerramento"
+            >
               <span className="text-sm font-semibold">Encerrar para todos?</span>
               <Button
                 variant="destructive"
@@ -199,13 +214,18 @@ function SalaProfessor() {
           view={view}
           online={online}
           busy={busy}
-          onStart={() => void act(() => hostRpc.start(id), "Não foi possível começar. Confira se há perguntas.")}
+          onStart={() =>
+            void act(() => hostRpc.start(id), "Não foi possível começar. Confira se há perguntas.")
+          }
           onMove={(p) => void movePlayer(p)}
         />
       ) : null}
 
       {view.status === SESSION_STATUS.STARTING ? (
-        <section className="rounded-3xl border border-border bg-card p-10 text-center shadow-[var(--shadow-card)]" role="status">
+        <section
+          className="rounded-3xl border border-border bg-card p-10 text-center shadow-[var(--shadow-card)]"
+          role="status"
+        >
           <QuestionHeader view={view} />
           <p className="mt-4 font-display text-7xl font-extrabold text-primary" aria-live="polite">
             {seconds > 0 ? seconds : "Já!"}
@@ -220,20 +240,29 @@ function SalaProfessor() {
             <QuestionHeader view={view} />
             <TimerBadge seconds={seconds} large />
           </div>
-          <h2 className="break-words text-2xl font-extrabold sm:text-3xl">{view.question?.prompt}</h2>
+          <h2 className="break-words text-2xl font-extrabold sm:text-3xl">
+            {view.question?.prompt}
+          </h2>
           <OptionGrid view={view} size="lg" />
           <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xl font-extrabold" aria-live="polite">
               {view.answered_count ?? 0} / {view.players_count} responderam
             </p>
-            <Button variant="outline" size="lg" disabled={busy} onClick={() => void act(() => hostRpc.closeQuestion(id))}>
+            <Button
+              variant="outline"
+              size="lg"
+              disabled={busy}
+              onClick={() => void act(() => hostRpc.closeQuestion(id))}
+            >
               Encerrar pergunta
             </Button>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden="true">
             <div
               className="h-full rounded-full bg-primary transition-[width] duration-300"
-              style={{ width: `${((view.answered_count ?? 0) / Math.max(1, view.players_count)) * 100}%` }}
+              style={{
+                width: `${((view.answered_count ?? 0) / Math.max(1, view.players_count)) * 100}%`,
+              }}
             />
           </div>
         </section>
@@ -248,7 +277,8 @@ function SalaProfessor() {
               <OptionGrid view={view} />
               <div className="space-y-3">
                 <p className="font-bold">
-                  {accuracy(view)}% de acerto · {view.answered_count ?? 0} de {view.players_count} responderam
+                  {accuracy(view)}% de acerto · {view.answered_count ?? 0} de {view.players_count}{" "}
+                  responderam
                 </p>
                 <Distribution view={view} />
               </div>
@@ -263,7 +293,12 @@ function SalaProfessor() {
           {adapter.teams ? <RoundTeams view={view} /> : null}
           {adapter.Panel ? <adapter.Panel view={view} /> : null}
           <div className="flex justify-end">
-            <Button variant="hero" size="xl" disabled={busy} onClick={() => void act(() => hostRpc.leaderboard(id))}>
+            <Button
+              variant="hero"
+              size="xl"
+              disabled={busy}
+              onClick={() => void act(() => hostRpc.leaderboard(id))}
+            >
               <BarChart3 className="size-5" aria-hidden="true" /> Ver ranking
             </Button>
           </div>
@@ -305,7 +340,10 @@ function SalaProfessor() {
         view.results ? (
           <FinalResults view={view} results={view.results} />
         ) : (
-          <section role="status" className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+          <section
+            role="status"
+            className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]"
+          >
             <p className="text-2xl font-extrabold">Partida encerrada</p>
             <p className="text-sm text-muted-foreground">O PIN não aceita mais alunos.</p>
           </section>
@@ -329,7 +367,11 @@ function RoundTeams({ view }: { view: RoomView }) {
         { team: a, pts: view.round_team_a ?? 0 },
         { team: b, pts: view.round_team_b ?? 0 },
       ].map(({ team, pts }) => (
-        <div key={team.name} className="rounded-2xl border-4 bg-card p-4 text-center" style={{ borderColor: teamColorVar(team.color) }}>
+        <div
+          key={team.name}
+          className="rounded-2xl border-4 bg-card p-4 text-center"
+          style={{ borderColor: teamColorVar(team.color) }}
+        >
           <p className="text-sm font-bold uppercase">{team.name}</p>
           <p className="font-display text-2xl font-extrabold">+{formatPoints(pts)}</p>
           <p className="text-xs text-muted-foreground">nesta rodada</p>
@@ -357,15 +399,22 @@ function Lobby({
   const teamMode = isTeamMode(view.game_mode);
   const teams = teamsOf(view);
   const link = joinUrl(view.pin);
-  const copy = (text: string, msg: string) => navigator.clipboard.writeText(text).then(() => toast.success(msg));
+  const copy = (text: string, msg: string) =>
+    navigator.clipboard.writeText(text).then(() => toast.success(msg));
 
   return (
     <>
       <section className="grid gap-6 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)] md:grid-cols-[1fr_auto] md:items-center">
         <div className="min-w-0">
-          <p className="text-sm font-bold uppercase tracking-wide text-muted-foreground">Entre em</p>
-          <p className="break-all font-display text-lg font-bold sm:text-2xl">{joinBaseUrl().replace(/^https?:\/\//, "")}</p>
-          <p className="mt-4 text-sm font-bold uppercase tracking-wide text-muted-foreground">PIN</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+            Entre em
+          </p>
+          <p className="break-all font-display text-lg font-bold sm:text-2xl">
+            {joinBaseUrl().replace(/^https?:\/\//, "")}
+          </p>
+          <p className="mt-4 text-sm font-bold uppercase tracking-wide text-muted-foreground">
+            PIN
+          </p>
           <p
             className="font-display text-6xl font-extrabold tracking-[0.12em] text-primary sm:text-7xl"
             aria-label={`PIN ${view.pin.split("").join(" ")}`}
@@ -394,9 +443,16 @@ function Lobby({
           <p className="flex items-center gap-2 text-2xl font-extrabold" aria-live="polite">
             <Users className="size-6 text-primary" aria-hidden="true" />
             {players.length} {players.length === 1 ? "jogador" : "jogadores"}
-            <span className="text-sm font-semibold text-muted-foreground">· {online.size} conectados</span>
+            <span className="text-sm font-semibold text-muted-foreground">
+              · {online.size} conectados
+            </span>
           </p>
-          <Button variant="hero" size="xl" disabled={players.length === 0 || busy} onClick={onStart}>
+          <Button
+            variant="hero"
+            size="xl"
+            disabled={players.length === 0 || busy}
+            onClick={onStart}
+          >
             <Play className="size-5" aria-hidden="true" /> Começar jogo
           </Button>
         </div>
@@ -448,7 +504,9 @@ function Lobby({
           <div className="mx-auto rounded-2xl bg-background p-4">
             <QRCodeSVG value={link} size={320} level="M" className="h-auto max-w-full" />
           </div>
-          <p className="font-display text-5xl font-extrabold tracking-[0.12em] text-primary">{view.pin}</p>
+          <p className="font-display text-5xl font-extrabold tracking-[0.12em] text-primary">
+            {view.pin}
+          </p>
         </DialogContent>
       </Dialog>
     </>
@@ -482,21 +540,37 @@ function TeamColumn({
   onMove: (p: RankingRow) => void;
 }) {
   return (
-    <div className="rounded-3xl border-4 bg-card p-5" style={{ borderColor: teamColorVar(team.color) }}>
+    <div
+      className="rounded-3xl border-4 bg-card p-5"
+      style={{ borderColor: teamColorVar(team.color) }}
+    >
       <p className="flex items-center justify-between text-lg font-extrabold uppercase">
         {team.name}
-        <span className="rounded-full px-3 py-1 text-sm text-primary-foreground" style={{ backgroundColor: teamColorVar(team.color) }}>
+        <span
+          className="rounded-full px-3 py-1 text-sm text-primary-foreground"
+          style={{ backgroundColor: teamColorVar(team.color) }}
+        >
           {players.length}
         </span>
       </p>
       <ul className="mt-4 space-y-2">
         {players.map((p) => (
-          <li key={p.id} className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2">
-            <span className={`flex min-w-0 items-center gap-2 font-semibold ${online.has(p.id) ? "" : "opacity-60"}`}>
+          <li
+            key={p.id}
+            className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2"
+          >
+            <span
+              className={`flex min-w-0 items-center gap-2 font-semibold ${online.has(p.id) ? "" : "opacity-60"}`}
+            >
               <OnlineIcon on={online.has(p.id)} />
               <span className="truncate">{p.nickname}</span>
             </span>
-            <Button variant="ghost" size="sm" onClick={() => onMove(p)} aria-label={`Mover ${p.nickname} para ${other.name}`}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMove(p)}
+              aria-label={`Mover ${p.nickname} para ${other.name}`}
+            >
               <ArrowLeftRight className="size-4" aria-hidden="true" />
               <span className="hidden sm:inline">Mover para {other.name}</span>
             </Button>

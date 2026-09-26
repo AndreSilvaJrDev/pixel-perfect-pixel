@@ -1,19 +1,32 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, Flag, Loader2, Rocket, Users } from "lucide-react";
+import { CheckCircle2, Flag, Loader2, Send, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/brand/Logo";
 import { teamColorVar } from "@/lib/activities";
+import { getModeAdapter } from "@/components/game/modes";
+import {
+  Leaderboard,
+  OptionGrid,
+  QuestionHeader,
+  TimerBadge,
+  teamsOf,
+} from "@/components/game/parts";
+import { teamWinner } from "@/components/game/FinalResults";
+import { useRoomClock } from "@/components/game/useRoomClock";
 import {
   NICK_MAX,
+  ROOM_EVENTS,
   SESSION_STATUS,
+  clockOffset,
+  formatPoints,
+  submitAnswer,
   clearStoredPlayer,
   friendlyError,
   getPlayerState,
-  isInGame,
   joinGame,
   loadStoredPlayer,
   lookupPin,
@@ -50,6 +63,16 @@ function SalaAluno() {
   const [phase, setPhase] = useState<Phase>({ kind: "checking" });
   const [me, setMe] = useState<StoredPlayer | null>(null);
   const [state, setState] = useState<PlayerState | null>(null);
+  const [offset, setOffset] = useState(0);
+  const versionRef = useRef(-1);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const accept = useCallback((s: PlayerState) => {
+    // ignora estado antigo que chegue depois de um mais novo
+    if (s.version < versionRef.current) return;
+    versionRef.current = s.version;
+    setState(s);
+    setOffset(clockOffset(s));
+  }, []);
 
   const refresh = useCallback(
     async (p: StoredPlayer) => {
@@ -60,10 +83,10 @@ function SalaAluno() {
         setPhase({ kind: "checking" });
         return false;
       }
-      setState(s);
+      accept(s);
       return true;
     },
-    [codigo],
+    [codigo, accept],
   );
 
   // inicial: reconecta com token salvo ou valida o PIN
@@ -77,7 +100,7 @@ function SalaAluno() {
           if (cancelled) return;
           if (!s.error) {
             setMe(stored);
-            setState(s);
+            accept(s);
             setPhase({ kind: "joined" });
             return;
           }
@@ -94,7 +117,7 @@ function SalaAluno() {
     return () => {
       cancelled = true;
     };
-  }, [codigo]);
+  }, [codigo, accept]);
 
   // realtime: presença + avisos do professor
   useEffect(() => {
@@ -110,6 +133,7 @@ function SalaAluno() {
           void refresh(me);
         }
       });
+    channelRef.current = channel;
     const onVisible = () => document.visibilityState === "visible" && void refresh(me);
     document.addEventListener("visibilitychange", onVisible);
     // rede de segurança leve caso algum aviso se perca
@@ -117,9 +141,31 @@ function SalaAluno() {
     return () => {
       document.removeEventListener("visibilitychange", onVisible);
       window.clearInterval(timer);
+      channelRef.current = null;
       void supabase.removeChannel(channel);
     };
   }, [me, refresh]);
+
+  const seconds = useRoomClock(state, offset, () => me && void refresh(me));
+
+  async function answer(index: number) {
+    if (!me || !state?.question) return;
+    setState((s) =>
+      s && s.me ? { ...s, me: { ...s.me, answered: true, selected_index: index } } : s,
+    );
+    try {
+      const res = await submitAnswer(me.playerId, me.token, state.question.id, index);
+      if (res.error) void refresh(me);
+      else
+        void channelRef.current?.send({
+          type: "broadcast",
+          event: ROOM_EVENTS.ANSWER_SUBMITTED,
+          payload: {},
+        });
+    } catch {
+      void refresh(me);
+    }
+  }
 
   return (
     <main className="flex min-h-[100dvh] flex-col items-center bg-surface px-4 py-8">
@@ -144,7 +190,9 @@ function SalaAluno() {
             onBlocked={(m) => setPhase({ kind: "blocked", message: m })}
           />
         ) : null}
-        {phase.kind === "joined" && state ? <Waiting state={state} /> : null}
+        {phase.kind === "joined" && state ? (
+          <PlayerScreen state={state} seconds={seconds} onAnswer={(i) => void answer(i)} />
+        ) : null}
       </div>
     </main>
   );
@@ -247,73 +295,199 @@ function NicknameForm({
   );
 }
 
-function Waiting({ state }: { state: PlayerState }) {
-  const team =
-    state.team === "a"
-      ? { name: state.team_a_name, color: state.team_a_color }
-      : state.team === "b"
-        ? { name: state.team_b_name, color: state.team_b_color }
-        : null;
+function TeamTag({ state }: { state: PlayerState }) {
+  const t = state.me?.team;
+  if (!t) return null;
+  const team = teamsOf(state)[t === "a" ? 0 : 1];
+  return (
+    <div
+      className="flex items-center gap-3 rounded-2xl border-4 bg-card p-3"
+      style={{ borderColor: teamColorVar(team.color) }}
+    >
+      <span
+        className="flex size-9 shrink-0 items-center justify-center rounded-full"
+        style={{ backgroundColor: teamColorVar(team.color) }}
+        aria-hidden="true"
+      >
+        <Users className="size-5 text-primary-foreground" />
+      </span>
+      <p className="font-extrabold">Você está no {team.name}</p>
+    </div>
+  );
+}
 
-  if (state.status === SESSION_STATUS.FINISHED) {
+function PlayerScreen({
+  state,
+  seconds,
+  onAnswer,
+}: {
+  state: PlayerState;
+  seconds: number;
+  onAnswer: (i: number) => void;
+}) {
+  const me = state.me;
+  const adapter = getModeAdapter(state.game_mode);
+
+  if (state.status === SESSION_STATUS.LOBBY) {
     return (
-      <Card>
-        <Flag className="mx-auto size-10 text-muted-foreground" aria-hidden="true" />
-        <p role="status" className="mt-4 text-xl font-extrabold">
-          Essa partida foi encerrada pelo professor.
-        </p>
-        <Button asChild variant="outline" size="lg" className="mt-6 w-full">
-          <Link to="/jogar">Entrar em outro jogo</Link>
-        </Button>
-      </Card>
+      <div className="space-y-4">
+        <Card>
+          <CheckCircle2 className="mx-auto size-10 text-success" aria-hidden="true" />
+          <p className="mt-4 text-3xl font-extrabold">Você entrou!</p>
+          <p className="mt-2 break-words font-display text-2xl font-bold text-primary">
+            {me?.nickname}
+          </p>
+          <p
+            role="status"
+            className="mt-4 flex items-center justify-center gap-2 text-muted-foreground"
+          >
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            Aguardando o professor começar...
+          </p>
+          <p className="mt-5 text-sm font-semibold text-muted-foreground">{state.title}</p>
+        </Card>
+        <TeamTag state={state} />
+      </div>
     );
   }
 
-  const started = isInGame(state.status);
+  if (state.status === SESSION_STATUS.STARTING) {
+    return (
+      <div className="space-y-4">
+        <Card>
+          <QuestionHeader view={state} />
+          {state.question_index === 0 ? (
+            <p className="mt-3 text-2xl font-extrabold">O jogo começou!</p>
+          ) : null}
+          <p className="mt-2 text-muted-foreground">
+            Prepare-se para a {state.question_index === 0 ? "primeira" : "próxima"} pergunta.
+          </p>
+          <p className="mt-4 font-display text-7xl font-extrabold text-primary" aria-live="polite">
+            {seconds > 0 ? seconds : "Já!"}
+          </p>
+        </Card>
+        <TeamTag state={state} />
+      </div>
+    );
+  }
+
+  if (state.status === SESSION_STATUS.QUESTION) {
+    const answered = !!me?.answered;
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <QuestionHeader view={state} />
+          <TimerBadge seconds={seconds} />
+        </div>
+        <h1 className="break-words text-xl font-extrabold sm:text-2xl">{state.question?.prompt}</h1>
+        <OptionGrid
+          view={state}
+          size="lg"
+          selected={me?.selected_index}
+          disabled={answered || seconds === 0}
+          onPick={onAnswer}
+        />
+        {answered ? (
+          <p
+            role="status"
+            className="flex items-center justify-center gap-2 rounded-2xl bg-primary/10 p-4 font-bold text-primary"
+          >
+            <Send className="size-5" aria-hidden="true" /> Resposta enviada! Aguarde os colegas.
+          </p>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (state.status === SESSION_STATUS.REVEAL) {
+    const correctText = state.question?.options[state.correct_index ?? 0] ?? "";
+    const myTeam = me?.team;
+    const ra = state.round_team_a ?? 0;
+    const rb = state.round_team_b ?? 0;
+    return (
+      <div className="space-y-4">
+        <Card>
+          {me?.is_correct ? (
+            <>
+              <p className="text-3xl font-extrabold text-success">Acertou! 🎉</p>
+              <p className="mt-2 font-display text-3xl font-extrabold">
+                +{formatPoints(me.score_awarded ?? 0)} pontos
+              </p>
+            </>
+          ) : (
+            <p className="text-2xl font-extrabold">
+              {me?.answered ? "Não foi dessa vez." : "Tempo esgotado."}
+            </p>
+          )}
+          <p className="mt-4 text-sm text-muted-foreground">Resposta correta</p>
+          <p className="break-words text-xl font-bold">
+            {adapter.optionLabel(state.correct_index ?? 0, correctText).text}
+          </p>
+          {state.explanation ? (
+            <p className="mt-3 text-sm text-muted-foreground">{state.explanation}</p>
+          ) : null}
+        </Card>
+        {adapter.teams && myTeam ? (
+          <Card>
+            <p className="text-lg font-extrabold">
+              {(myTeam === "a" ? ra : rb) > 0
+                ? `Seu time ganhou +${formatPoints(myTeam === "a" ? ra : rb)} pontos!`
+                : ra === rb
+                  ? "Rodada empatada."
+                  : `O ${ra > rb ? state.team_a_name : state.team_b_name} ganhou esta rodada.`}
+            </p>
+          </Card>
+        ) : null}
+        {adapter.Panel ? <adapter.Panel view={state} meId={me?.id} /> : null}
+      </div>
+    );
+  }
+
+  if (state.status === SESSION_STATUS.LEADERBOARD) {
+    return (
+      <div className="space-y-4">
+        <Card>
+          <p className="text-3xl font-extrabold">Você está em {me?.rank}º lugar</p>
+          <p className="mt-2 text-muted-foreground">Pontuação total</p>
+          <p className="font-display text-3xl font-extrabold">{formatPoints(me?.score ?? 0)}</p>
+        </Card>
+        {adapter.Panel ? <adapter.Panel view={state} meId={me?.id} /> : null}
+        <Leaderboard rows={state.ranking} limit={5} highlightId={me?.id} view={state} />
+      </div>
+    );
+  }
+
+  // FINISHED
+  const r = state.results;
+  const winner = r && adapter.teams ? teamWinner(state, r) : null;
   return (
     <div className="space-y-4">
-      <Card>
-        {started ? (
-          <>
-            <Rocket className="mx-auto size-10 text-primary" aria-hidden="true" />
-            <p role="status" className="mt-4 text-3xl font-extrabold">
-              O jogo começou!
+      {r && me ? (
+        <Card>
+          <p className="text-3xl font-extrabold">Você terminou em {me.rank}º lugar!</p>
+          <p className="mt-3 text-lg font-bold">
+            {me.correct_count} de {r.questions_asked} acertos
+          </p>
+          <p className="font-display text-3xl font-extrabold text-primary">
+            {formatPoints(me.score)} pontos
+          </p>
+          {adapter.teams ? (
+            <p className="mt-4 text-xl font-extrabold">
+              {winner ? `${winner.name} venceu!` : "Empate!"}
             </p>
-            <p className="mt-2 text-muted-foreground">Prepare-se para a primeira pergunta.</p>
-          </>
-        ) : (
-          <>
-            <CheckCircle2 className="mx-auto size-10 text-success" aria-hidden="true" />
-            <p className="mt-4 text-3xl font-extrabold">Você entrou!</p>
-            <p className="mt-2 break-words font-display text-2xl font-bold text-primary">
-              {state.nickname}
-            </p>
-            <p
-              role="status"
-              className="mt-4 flex items-center justify-center gap-2 text-muted-foreground"
-            >
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-              Aguardando o professor começar...
-            </p>
-          </>
-        )}
-        <p className="mt-5 text-sm font-semibold text-muted-foreground">{state.title}</p>
-      </Card>
-      {team ? (
-        <div
-          className="flex items-center gap-4 rounded-3xl border-4 bg-card p-5"
-          style={{ borderColor: teamColorVar(team.color) }}
-        >
-          <span
-            className="flex size-12 shrink-0 items-center justify-center rounded-full"
-            style={{ backgroundColor: teamColorVar(team.color) }}
-            aria-hidden="true"
-          >
-            <Users className="size-6 text-primary-foreground" />
-          </span>
-          <p className="text-xl font-extrabold">Você está no {team.name}</p>
-        </div>
-      ) : null}
+          ) : null}
+        </Card>
+      ) : (
+        <Card>
+          <Flag className="mx-auto size-10 text-muted-foreground" aria-hidden="true" />
+          <p role="status" className="mt-4 text-xl font-extrabold">
+            Essa partida foi encerrada pelo professor.
+          </p>
+        </Card>
+      )}
+      <Button asChild variant="outline" size="lg" className="w-full">
+        <Link to="/jogar">Entrar em outro jogo</Link>
+      </Button>
     </div>
   );
 }
