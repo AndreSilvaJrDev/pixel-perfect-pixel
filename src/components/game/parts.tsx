@@ -69,7 +69,9 @@ export function OptionGrid({
               className={cn(
                 "flex w-full items-center gap-3 rounded-2xl border-2 bg-card text-left font-semibold transition-colors motion-reduce:transition-none",
                 size === "lg" ? "min-h-16 px-4 py-4 text-lg" : "min-h-12 px-4 py-3",
-                onPick && !disabled && "hover:border-primary focus-visible:border-primary active:scale-[0.99]",
+                onPick &&
+                  !disabled &&
+                  "hover:border-primary focus-visible:border-primary active:scale-[0.99]",
                 selected === i && !revealed && "border-primary bg-primary/10",
                 correct && "border-success bg-success/10",
                 wrongPick && "border-destructive bg-destructive/5",
@@ -87,8 +89,12 @@ export function OptionGrid({
                 {label.badge}
               </span>
               <span className="min-w-0 flex-1 break-words">{label.text}</span>
-              {correct ? <Check className="size-5 shrink-0 text-success" aria-label="Resposta correta" /> : null}
-              {wrongPick ? <X className="size-5 shrink-0 text-destructive" aria-label="Sua resposta" /> : null}
+              {correct ? (
+                <Check className="size-5 shrink-0 text-success" aria-label="Resposta correta" />
+              ) : null}
+              {wrongPick ? (
+                <X className="size-5 shrink-0 text-destructive" aria-label="Sua resposta" />
+              ) : null}
             </button>
           </li>
         );
@@ -110,14 +116,19 @@ export function Distribution({ view }: { view: RoomView }) {
           <li key={i} className="space-y-1">
             <div className="flex items-center justify-between gap-3 text-sm font-semibold">
               <span className="flex min-w-0 items-center gap-2">
-                {correct ? <Check className="size-4 shrink-0 text-success" aria-label="Correta" /> : null}
+                {correct ? (
+                  <Check className="size-4 shrink-0 text-success" aria-label="Correta" />
+                ) : null}
                 <span className="truncate">{adapter.optionLabel(i, text).text}</span>
               </span>
               <span className="tabular-nums">{dist[i] ?? 0}</span>
             </div>
             <div className="h-3 overflow-hidden rounded-full bg-muted">
               <div
-                className={cn("h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none", correct ? "bg-success" : "bg-muted-foreground/40")}
+                className={cn(
+                  "h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none",
+                  correct ? "bg-success" : "bg-muted-foreground/40",
+                )}
                 style={{ width: `${((dist[i] ?? 0) / max) * 100}%` }}
               />
             </div>
@@ -156,13 +167,23 @@ export function Leaderboard({
             )}
           >
             <span className="w-8 shrink-0 text-center font-display text-lg font-extrabold">
-              {r.rank <= 3 ? <span aria-label={`${r.rank}º`}>{MEDALS[r.rank - 1]}</span> : `${r.rank}º`}
+              {r.rank <= 3 ? (
+                <span aria-label={`${r.rank}º`}>{MEDALS[r.rank - 1]}</span>
+              ) : (
+                `${r.rank}º`
+              )}
             </span>
             {team ? (
-              <span className="size-3 shrink-0 rounded-full" style={{ backgroundColor: teamColorVar(team.color) }} aria-label={team.name} />
+              <span
+                className="size-3 shrink-0 rounded-full"
+                style={{ backgroundColor: teamColorVar(team.color) }}
+                aria-label={team.name}
+              />
             ) : null}
             <span className="min-w-0 flex-1 truncate font-semibold">{r.nickname}</span>
-            <span className="font-display font-extrabold tabular-nums">{formatPoints(r.score)}</span>
+            <span className="font-display font-extrabold tabular-nums">
+              {formatPoints(r.score)}
+            </span>
           </li>
         );
       })}
@@ -177,14 +198,24 @@ export function RaceTrack({ view, meId }: { view: RoomView; meId?: string | unde
   const me = view.me;
   if (me && !rows.some((r) => r.id === me.id)) rows.push({ ...me, team: me.team } as RankingRow);
   return (
-    <div className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]" aria-label="Pista da corrida">
-      <p className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">Corrida do Saber</p>
+    <div
+      className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]"
+      aria-label="Pista da corrida"
+    >
+      <p className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+        Corrida do Saber
+      </p>
       <ul className="space-y-3">
         {rows.map((r) => {
           const pct = Math.min(100, (r.score / max) * 100);
           return (
             <li key={r.id} className="flex items-center gap-3">
-              <span className={cn("w-20 shrink-0 truncate text-sm font-semibold sm:w-28", r.id === meId && "text-primary")}>
+              <span
+                className={cn(
+                  "w-20 shrink-0 truncate text-sm font-semibold sm:w-28",
+                  r.id === meId && "text-primary",
+                )}
+              >
                 {r.nickname}
               </span>
               <div className="relative h-8 flex-1 rounded-full border border-dashed border-border bg-muted/50">

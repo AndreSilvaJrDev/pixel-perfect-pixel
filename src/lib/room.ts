@@ -174,8 +174,18 @@ export type PlayerState = RoomView;
 export const getPlayerState = (playerId: string, token: string) =>
   rpc("get_player_state", { _player_id: playerId, _token: token }) as Promise<RoomView>;
 
-export type SubmitResult = { ok?: boolean; already?: boolean; selected_index?: number; error?: string };
-export const submitAnswer = (playerId: string, token: string, questionId: string, selected: number) =>
+export type SubmitResult = {
+  ok?: boolean;
+  already?: boolean;
+  selected_index?: number;
+  error?: string;
+};
+export const submitAnswer = (
+  playerId: string,
+  token: string,
+  questionId: string,
+  selected: number,
+) =>
   rpc("submit_answer", {
     _player_id: playerId,
     _token: token,

@@ -55,7 +55,10 @@ const ADAPTERS: Record<string, GameModeAdapter> = {
     optionLabel: (i, text) => ({
       badge: i === 0 ? "✓" : "✕",
       text,
-      tone: i === 0 ? "bg-success text-success-foreground" : "bg-destructive text-destructive-foreground",
+      tone:
+        i === 0
+          ? "bg-success text-success-foreground"
+          : "bg-destructive text-destructive-foreground",
     }),
     Panel: null,
     teams: false,
