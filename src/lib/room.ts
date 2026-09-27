@@ -42,8 +42,7 @@ export const joinUrl = (pin: string) => `${joinBaseUrl()}/${pin}`;
 
 /** Payload de pergunta para o aluno (R3): nunca contém a correta nem a explicação. */
 export type PlayerQuestionPayload = {
-  questionId: string;
-  position: number;
+  id: string;
   prompt: string;
   options: string[];
 };
