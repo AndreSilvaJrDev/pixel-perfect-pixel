@@ -21,6 +21,7 @@ import { Route as AppResultadosRouteImport } from './routes/app/resultados'
 import { Route as JogarIndexRouteImport } from './routes/jogar/index'
 import { Route as JogarCodigoRouteImport } from './routes/jogar/$codigo'
 import { Route as AppAtividadeIdRouteImport } from './routes/app/atividade/$id'
+import { Route as AppResultadoIdRouteImport } from './routes/app/resultado.$id'
 import { Route as AppSalaIdRouteImport } from './routes/app/sala/$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -83,6 +84,11 @@ const AppAtividadeIdRoute = AppAtividadeIdRouteImport.update({
   path: '/atividade/$id',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppResultadoIdRoute = AppResultadoIdRouteImport.update({
+  id: '/resultado/$id',
+  path: '/resultado/$id',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppSalaIdRoute = AppSalaIdRouteImport.update({
   id: '/sala/$id',
   path: '/sala/$id',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/jogar/': typeof JogarIndexRoute
   '/app/atividade/$id': typeof AppAtividadeIdRoute
+  '/app/resultado/$id': typeof AppResultadoIdRoute
   '/app/sala/$id': typeof AppSalaIdRoute
 }
 export interface FileRoutesByTo {
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/jogar': typeof JogarIndexRoute
   '/app/atividade/$id': typeof AppAtividadeIdRoute
+  '/app/resultado/$id': typeof AppResultadoIdRoute
   '/app/sala/$id': typeof AppSalaIdRoute
 }
 export interface FileRoutesById {
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/jogar/': typeof JogarIndexRoute
   '/app/atividade/$id': typeof AppAtividadeIdRoute
+  '/app/resultado/$id': typeof AppResultadoIdRoute
   '/app/sala/$id': typeof AppSalaIdRoute
 }
 export interface FileRouteTypes {
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/jogar/'
     | '/app/atividade/$id'
+    | '/app/resultado/$id'
     | '/app/sala/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/jogar'
     | '/app/atividade/$id'
+    | '/app/resultado/$id'
     | '/app/sala/$id'
   id:
     | '__root__'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/jogar/'
     | '/app/atividade/$id'
+    | '/app/resultado/$id'
     | '/app/sala/$id'
   fileRoutesById: FileRoutesById
 }
@@ -276,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAtividadeIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/resultado/$id': {
+      id: '/app/resultado/$id'
+      path: '/resultado/$id'
+      fullPath: '/app/resultado/$id'
+      preLoaderRoute: typeof AppResultadoIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/app/sala/$id': {
       id: '/app/sala/$id'
       path: '/sala/$id'
@@ -293,6 +312,7 @@ interface AppRouteRouteChildren {
   AppResultadosRoute: typeof AppResultadosRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAtividadeIdRoute: typeof AppAtividadeIdRoute
+  AppResultadoIdRoute: typeof AppResultadoIdRoute
   AppSalaIdRoute: typeof AppSalaIdRoute
 }
 
@@ -303,6 +323,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppResultadosRoute: AppResultadosRoute,
   AppIndexRoute: AppIndexRoute,
   AppAtividadeIdRoute: AppAtividadeIdRoute,
+  AppResultadoIdRoute: AppResultadoIdRoute,
   AppSalaIdRoute: AppSalaIdRoute,
 }
 
