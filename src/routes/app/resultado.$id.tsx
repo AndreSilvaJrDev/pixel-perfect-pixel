@@ -14,7 +14,10 @@ export const Route = createFileRoute("/app/resultado/$id")({
       { title: "Resultado da partida — Professor Play" },
       { name: "description", content: "Pódio, ranking e desempenho da turma nesta partida." },
       { property: "og:title", content: "Resultado da partida — Professor Play" },
-      { property: "og:description", content: "Pódio, ranking e desempenho da turma nesta partida." },
+      {
+        property: "og:description",
+        content: "Pódio, ranking e desempenho da turma nesta partida.",
+      },
     ],
   }),
   component: ResultadoDetalhe,
@@ -27,7 +30,9 @@ function ResultadoDetalhe() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("game_sessions")
-        .select("id, created_at, results, activities(title, game_mode, team_a_name, team_b_name, team_a_color, team_b_color)")
+        .select(
+          "id, created_at, results, activities(title, game_mode, team_a_name, team_b_name, team_a_color, team_b_color)",
+        )
         .eq("id", id)
         .maybeSingle();
       if (error) throw error;
@@ -36,7 +41,14 @@ function ResultadoDetalhe() {
   });
   if (q.isLoading) return <Skeleton className="h-96 rounded-3xl" />;
   const a = q.data?.activities as
-    | { title: string; game_mode: string; team_a_name: string; team_b_name: string; team_a_color: string; team_b_color: string }
+    | {
+        title: string;
+        game_mode: string;
+        team_a_name: string;
+        team_b_name: string;
+        team_a_color: string;
+        team_b_color: string;
+      }
     | null
     | undefined;
   const results = q.data?.results as RoomResults | null | undefined;
@@ -52,7 +64,10 @@ function ResultadoDetalhe() {
   }
   return (
     <div className="space-y-6">
-      <Link to="/app/resultados" className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground">
+      <Link
+        to="/app/resultados"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-4" aria-hidden="true" /> Resultados
       </Link>
       <div>

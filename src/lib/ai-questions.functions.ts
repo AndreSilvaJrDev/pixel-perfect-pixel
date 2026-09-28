@@ -15,7 +15,7 @@ async function assertQuota(supabase: SupabaseClient<Database>, userId: string, c
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId)
     .gte("created_at", since);
-  if (error) return; // falha de contagem não bloqueia o professor
+  if (error) throw new Error("Não foi possível verificar o limite de IA. Tente mais tarde.");
   if ((count ?? 0) + cost > HOURLY_LIMIT) {
     throw new Error(
       "Você atingiu o limite de gerações desta hora. Tente novamente mais tarde ou edite as perguntas manualmente.",

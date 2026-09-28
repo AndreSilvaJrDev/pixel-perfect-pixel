@@ -569,6 +569,22 @@ function CriarAtividade() {
               </Button>
               <Button
                 type="button"
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  setTitle(suggestedTitle(payload.topic, subject, payload.grade));
+                  setQuestions(
+                    Array.from({ length: questionCount }, () =>
+                      emptyDraftQuestion(gameMode, difficulty),
+                    ),
+                  );
+                  setStatus("success");
+                }}
+              >
+                Criar perguntas manualmente
+              </Button>
+              <Button
+                type="button"
                 variant="hero"
                 size="lg"
                 className="flex-1"

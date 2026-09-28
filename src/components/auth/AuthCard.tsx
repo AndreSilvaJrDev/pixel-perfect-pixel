@@ -3,7 +3,6 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +24,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
     setLoading(true);
     try {
       if (isSignup) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -34,6 +33,10 @@ export function AuthCard({ mode }: { mode: Mode }) {
           },
         });
         if (error) throw error;
+        if (!data.session) {
+          toast.success("Confira seu e-mail para confirmar o cadastro antes de entrar.");
+          return;
+        }
         toast.success("Conta criada! Bem-vindo ao Professor Play.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -52,16 +55,17 @@ export function AuthCard({ mode }: { mode: Mode }) {
 
   async function handleGoogle() {
     setGoogleLoading(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) {
-      setGoogleLoading(false);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/app` },
+      });
+      if (error) throw error;
+    } catch {
       toast.error("Não foi possível entrar com o Google.");
-      return;
+    } finally {
+      setGoogleLoading(false);
     }
-    if (result.redirected) return;
-    await navigate({ to: "/app" });
   }
 
   return (
@@ -128,23 +132,27 @@ export function AuthCard({ mode }: { mode: Mode }) {
             </Button>
           </form>
 
-          <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
-            <span className="h-px flex-1 bg-border" />
-            ou
-            <span className="h-px flex-1 bg-border" />
-          </div>
+          {import.meta.env["VITE_GOOGLE_AUTH_ENABLED"] === "true" && (
+            <>
+              <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
+                <span className="h-px flex-1 bg-border" />
+                ou
+                <span className="h-px flex-1 bg-border" />
+              </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            className="w-full"
-            onClick={handleGoogle}
-            disabled={googleLoading}
-          >
-            {googleLoading && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-            Continuar com o Google
-          </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={handleGoogle}
+                disabled={googleLoading}
+              >
+                {googleLoading && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+                Continuar com o Google
+              </Button>
+            </>
+          )}
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             {isSignup ? (

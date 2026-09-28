@@ -1,8 +1,7 @@
-import { createOpenAI } from "@ai-sdk/openai";
 import { streamText, Output } from "ai";
 import { z } from "zod";
 
-import { createLovableAiGatewayRunIdFetch, requireLovableApiKey } from "./ai-gateway.server";
+import { getAIModel } from "./ai-provider.server";
 import {
   isTrueFalseMode,
   optionsCountFor,
@@ -12,7 +11,6 @@ import {
 } from "./ai-questions";
 
 /** Modelo/provedor em uso. Trocar aqui é suficiente para migrar de modelo. */
-export const AI_MODEL = "openai/gpt-6-astra";
 
 const DIFFICULTY_LABEL: Record<string, string> = {
   facil: "fácil",
@@ -88,29 +86,14 @@ async function callModel(
   input: GenerateInput,
   extra?: { avoidPrompts?: string[]; single?: boolean },
 ) {
-  const key = requireLovableApiKey();
-  const runIdFetch = createLovableAiGatewayRunIdFetch();
-  const lovable = createOpenAI({
-    baseURL: "https://ai.gateway.lovable.dev/v1",
-    apiKey: key,
-    headers: { "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
-    fetch: runIdFetch.fetch,
-  });
-
   const result = streamText({
-    model: lovable.responses(AI_MODEL),
+    model: getAIModel(),
+    maxRetries: 0,
+    maxOutputTokens: 6000,
+    abortSignal: AbortSignal.timeout(45000),
     system: systemPrompt(input),
     prompt: userPrompt(input, extra),
     output: Output.object({ schema: aiActivitySchema }),
-    providerOptions: {
-      openai: {
-        forceReasoning: true,
-        reasoningEffort: "low",
-        reasoningSummary: "auto",
-        store: false,
-        include: ["reasoning.encrypted_content"],
-      },
-    },
   });
 
   return await result.output;

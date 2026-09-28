@@ -1,0 +1,12 @@
+Arquivos do projeto original que devem ser removidos ao aplicar esta versão:
+.env (salve sua cópia local fora do Git antes)
+.lovable/project.json
+bun.lock (substituído por package-lock.json)
+bunfig.toml
+src/integrations/lovable/index.ts
+src/integrations/supabase/previewAuthStorage.ts
+src/integrations/supabase/cron-auth.ts (sem referências no projeto)
+src/lib/lovable-error-reporting.ts
+src/lib/ai-gateway.server.ts (substituído por ai-provider.server.ts)
+
+Os originais permanecem recuperáveis no ZIP fornecido pelo usuário.

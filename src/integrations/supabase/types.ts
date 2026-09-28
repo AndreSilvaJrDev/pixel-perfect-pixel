@@ -1,593 +1,581 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
+    PostgrestVersion: "14.5";
+  };
   public: {
     Tables: {
       activities: {
         Row: {
-          created_at: string
-          difficulty: string
-          game_mode: string
-          grade: number
-          id: string
-          is_demo: boolean
-          owner_id: string
-          subject: string
-          team_a_color: string
-          team_a_name: string
-          team_b_color: string
-          team_b_name: string
-          team_distribution: string
-          title: string
-          topic: string | null
-          updated_at: string
-        }
+          created_at: string;
+          difficulty: string;
+          game_mode: string;
+          grade: number;
+          id: string;
+          is_demo: boolean;
+          owner_id: string;
+          subject: string;
+          team_a_color: string;
+          team_a_name: string;
+          team_b_color: string;
+          team_b_name: string;
+          team_distribution: string;
+          title: string;
+          topic: string | null;
+          updated_at: string;
+        };
         Insert: {
-          created_at?: string
-          difficulty?: string
-          game_mode?: string
-          grade: number
-          id?: string
-          is_demo?: boolean
-          owner_id: string
-          subject: string
-          team_a_color?: string
-          team_a_name?: string
-          team_b_color?: string
-          team_b_name?: string
-          team_distribution?: string
-          title: string
-          topic?: string | null
-          updated_at?: string
-        }
+          created_at?: string;
+          difficulty?: string;
+          game_mode?: string;
+          grade: number;
+          id?: string;
+          is_demo?: boolean;
+          owner_id: string;
+          subject: string;
+          team_a_color?: string;
+          team_a_name?: string;
+          team_b_color?: string;
+          team_b_name?: string;
+          team_distribution?: string;
+          title: string;
+          topic?: string | null;
+          updated_at?: string;
+        };
         Update: {
-          created_at?: string
-          difficulty?: string
-          game_mode?: string
-          grade?: number
-          id?: string
-          is_demo?: boolean
-          owner_id?: string
-          subject?: string
-          team_a_color?: string
-          team_a_name?: string
-          team_b_color?: string
-          team_b_name?: string
-          team_distribution?: string
-          title?: string
-          topic?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          difficulty?: string;
+          game_mode?: string;
+          grade?: number;
+          id?: string;
+          is_demo?: boolean;
+          owner_id?: string;
+          subject?: string;
+          team_a_color?: string;
+          team_a_name?: string;
+          team_b_color?: string;
+          team_b_name?: string;
+          team_distribution?: string;
+          title?: string;
+          topic?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       ai_generations: {
         Row: {
-          created_at: string
-          id: string
-          kind: string
-          question_count: number
-          subject: string | null
-          topic: string | null
-          user_id: string
-        }
+          created_at: string;
+          id: string;
+          kind: string;
+          question_count: number;
+          subject: string | null;
+          topic: string | null;
+          user_id: string;
+        };
         Insert: {
-          created_at?: string
-          id?: string
-          kind?: string
-          question_count?: number
-          subject?: string | null
-          topic?: string | null
-          user_id: string
-        }
+          created_at?: string;
+          id?: string;
+          kind?: string;
+          question_count?: number;
+          subject?: string | null;
+          topic?: string | null;
+          user_id: string;
+        };
         Update: {
-          created_at?: string
-          id?: string
-          kind?: string
-          question_count?: number
-          subject?: string | null
-          topic?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          id?: string;
+          kind?: string;
+          question_count?: number;
+          subject?: string | null;
+          topic?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       answers: {
         Row: {
-          created_at: string
-          id: string
-          is_correct: boolean
-          player_id: string
-          question_id: string
-          response_ms: number | null
-          score_awarded: number
-          selected_index: number | null
-          session_id: string
-        }
+          created_at: string;
+          id: string;
+          is_correct: boolean;
+          player_id: string;
+          question_id: string;
+          response_ms: number | null;
+          score_awarded: number;
+          selected_index: number | null;
+          session_id: string;
+        };
         Insert: {
-          created_at?: string
-          id?: string
-          is_correct?: boolean
-          player_id: string
-          question_id: string
-          response_ms?: number | null
-          score_awarded?: number
-          selected_index?: number | null
-          session_id: string
-        }
+          created_at?: string;
+          id?: string;
+          is_correct?: boolean;
+          player_id: string;
+          question_id: string;
+          response_ms?: number | null;
+          score_awarded?: number;
+          selected_index?: number | null;
+          session_id: string;
+        };
         Update: {
-          created_at?: string
-          id?: string
-          is_correct?: boolean
-          player_id?: string
-          question_id?: string
-          response_ms?: number | null
-          score_awarded?: number
-          selected_index?: number | null
-          session_id?: string
-        }
+          created_at?: string;
+          id?: string;
+          is_correct?: boolean;
+          player_id?: string;
+          question_id?: string;
+          response_ms?: number | null;
+          score_awarded?: number;
+          selected_index?: number | null;
+          session_id?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "answers_player_id_fkey"
-            columns: ["player_id"]
-            isOneToOne: false
-            referencedRelation: "players"
-            referencedColumns: ["id"]
+            foreignKeyName: "answers_player_id_fkey";
+            columns: ["player_id"];
+            isOneToOne: false;
+            referencedRelation: "players";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "answers_question_id_fkey"
-            columns: ["question_id"]
-            isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["id"]
+            foreignKeyName: "answers_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "answers_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "game_sessions"
-            referencedColumns: ["id"]
+            foreignKeyName: "answers_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       entitlements: {
         Row: {
-          expires_at: string | null
-          external_reference: string | null
-          granted_at: string
-          id: string
-          product: string
-          source: string
-          status: string
-          user_id: string
-        }
+          expires_at: string | null;
+          external_reference: string | null;
+          granted_at: string;
+          id: string;
+          product: string;
+          source: string;
+          status: string;
+          user_id: string;
+        };
         Insert: {
-          expires_at?: string | null
-          external_reference?: string | null
-          granted_at?: string
-          id?: string
-          product?: string
-          source?: string
-          status?: string
-          user_id: string
-        }
+          expires_at?: string | null;
+          external_reference?: string | null;
+          granted_at?: string;
+          id?: string;
+          product?: string;
+          source?: string;
+          status?: string;
+          user_id: string;
+        };
         Update: {
-          expires_at?: string | null
-          external_reference?: string | null
-          granted_at?: string
-          id?: string
-          product?: string
-          source?: string
-          status?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
+          expires_at?: string | null;
+          external_reference?: string | null;
+          granted_at?: string;
+          id?: string;
+          product?: string;
+          source?: string;
+          status?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       game_events: {
         Row: {
-          created_at: string
-          event: string
-          id: string
-          player_id: string | null
-          session_id: string
-        }
+          created_at: string;
+          event: string;
+          id: string;
+          player_id: string | null;
+          session_id: string;
+        };
         Insert: {
-          created_at?: string
-          event: string
-          id?: string
-          player_id?: string | null
-          session_id: string
-        }
+          created_at?: string;
+          event: string;
+          id?: string;
+          player_id?: string | null;
+          session_id: string;
+        };
         Update: {
-          created_at?: string
-          event?: string
-          id?: string
-          player_id?: string | null
-          session_id?: string
-        }
+          created_at?: string;
+          event?: string;
+          id?: string;
+          player_id?: string | null;
+          session_id?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "game_events_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "game_sessions"
-            referencedColumns: ["id"]
+            foreignKeyName: "game_events_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       game_sessions: {
         Row: {
-          activity_id: string
-          allow_late_join: boolean
-          created_at: string
-          current_question: number
-          ended_at: string | null
-          expires_at: string
-          host_id: string
-          id: string
-          pin: string
-          question_duration_s: number
-          question_ends_at: string | null
-          question_ids: string[] | null
-          question_started_at: string | null
-          results: Json | null
-          started_at: string | null
-          state_version: number
-          status: string
-          updated_at: string
-        }
+          activity_id: string;
+          allow_late_join: boolean;
+          created_at: string;
+          current_question: number;
+          ended_at: string | null;
+          expires_at: string;
+          host_id: string;
+          id: string;
+          pin: string;
+          question_duration_s: number;
+          question_ends_at: string | null;
+          question_ids: string[] | null;
+          question_started_at: string | null;
+          results: Json | null;
+          started_at: string | null;
+          state_version: number;
+          status: string;
+          updated_at: string;
+        };
         Insert: {
-          activity_id: string
-          allow_late_join?: boolean
-          created_at?: string
-          current_question?: number
-          ended_at?: string | null
-          expires_at?: string
-          host_id: string
-          id?: string
-          pin: string
-          question_duration_s?: number
-          question_ends_at?: string | null
-          question_ids?: string[] | null
-          question_started_at?: string | null
-          results?: Json | null
-          started_at?: string | null
-          state_version?: number
-          status?: string
-          updated_at?: string
-        }
+          activity_id: string;
+          allow_late_join?: boolean;
+          created_at?: string;
+          current_question?: number;
+          ended_at?: string | null;
+          expires_at?: string;
+          host_id: string;
+          id?: string;
+          pin: string;
+          question_duration_s?: number;
+          question_ends_at?: string | null;
+          question_ids?: string[] | null;
+          question_started_at?: string | null;
+          results?: Json | null;
+          started_at?: string | null;
+          state_version?: number;
+          status?: string;
+          updated_at?: string;
+        };
         Update: {
-          activity_id?: string
-          allow_late_join?: boolean
-          created_at?: string
-          current_question?: number
-          ended_at?: string | null
-          expires_at?: string
-          host_id?: string
-          id?: string
-          pin?: string
-          question_duration_s?: number
-          question_ends_at?: string | null
-          question_ids?: string[] | null
-          question_started_at?: string | null
-          results?: Json | null
-          started_at?: string | null
-          state_version?: number
-          status?: string
-          updated_at?: string
-        }
+          activity_id?: string;
+          allow_late_join?: boolean;
+          created_at?: string;
+          current_question?: number;
+          ended_at?: string | null;
+          expires_at?: string;
+          host_id?: string;
+          id?: string;
+          pin?: string;
+          question_duration_s?: number;
+          question_ends_at?: string | null;
+          question_ids?: string[] | null;
+          question_started_at?: string | null;
+          results?: Json | null;
+          started_at?: string | null;
+          state_version?: number;
+          status?: string;
+          updated_at?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "game_sessions_activity_id_fkey"
-            columns: ["activity_id"]
-            isOneToOne: false
-            referencedRelation: "activities"
-            referencedColumns: ["id"]
+            foreignKeyName: "game_sessions_activity_id_fkey";
+            columns: ["activity_id"];
+            isOneToOne: false;
+            referencedRelation: "activities";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       players: {
         Row: {
-          correct_count: number
-          correct_time_ms: number
-          id: string
-          joined_at: string
-          last_seen_at: string
-          nickname: string
-          score: number
-          session_id: string
-          team: string | null
-          token_hash: string | null
-        }
+          correct_count: number;
+          correct_time_ms: number;
+          id: string;
+          joined_at: string;
+          last_seen_at: string;
+          nickname: string;
+          score: number;
+          session_id: string;
+          team: string | null;
+          token_hash: string | null;
+        };
         Insert: {
-          correct_count?: number
-          correct_time_ms?: number
-          id?: string
-          joined_at?: string
-          last_seen_at?: string
-          nickname: string
-          score?: number
-          session_id: string
-          team?: string | null
-          token_hash?: string | null
-        }
+          correct_count?: number;
+          correct_time_ms?: number;
+          id?: string;
+          joined_at?: string;
+          last_seen_at?: string;
+          nickname: string;
+          score?: number;
+          session_id: string;
+          team?: string | null;
+          token_hash?: string | null;
+        };
         Update: {
-          correct_count?: number
-          correct_time_ms?: number
-          id?: string
-          joined_at?: string
-          last_seen_at?: string
-          nickname?: string
-          score?: number
-          session_id?: string
-          team?: string | null
-          token_hash?: string | null
-        }
+          correct_count?: number;
+          correct_time_ms?: number;
+          id?: string;
+          joined_at?: string;
+          last_seen_at?: string;
+          nickname?: string;
+          score?: number;
+          session_id?: string;
+          team?: string | null;
+          token_hash?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "players_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "game_sessions"
-            referencedColumns: ["id"]
+            foreignKeyName: "players_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       profiles: {
         Row: {
-          created_at: string
-          full_name: string
-          id: string
-          school: string | null
-          updated_at: string
-        }
+          created_at: string;
+          full_name: string;
+          id: string;
+          school: string | null;
+          updated_at: string;
+        };
         Insert: {
-          created_at?: string
-          full_name?: string
-          id: string
-          school?: string | null
-          updated_at?: string
-        }
+          created_at?: string;
+          full_name?: string;
+          id: string;
+          school?: string | null;
+          updated_at?: string;
+        };
         Update: {
-          created_at?: string
-          full_name?: string
-          id?: string
-          school?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          full_name?: string;
+          id?: string;
+          school?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       questions: {
         Row: {
-          activity_id: string
-          correct_index: number
-          created_at: string
-          difficulty: string
-          explanation: string | null
-          id: string
-          options: Json
-          position: number
-          prompt: string
-        }
+          activity_id: string;
+          correct_index: number;
+          created_at: string;
+          difficulty: string;
+          explanation: string | null;
+          id: string;
+          options: Json;
+          position: number;
+          prompt: string;
+        };
         Insert: {
-          activity_id: string
-          correct_index?: number
-          created_at?: string
-          difficulty?: string
-          explanation?: string | null
-          id?: string
-          options: Json
-          position?: number
-          prompt: string
-        }
+          activity_id: string;
+          correct_index?: number;
+          created_at?: string;
+          difficulty?: string;
+          explanation?: string | null;
+          id?: string;
+          options: Json;
+          position?: number;
+          prompt: string;
+        };
         Update: {
-          activity_id?: string
-          correct_index?: number
-          created_at?: string
-          difficulty?: string
-          explanation?: string | null
-          id?: string
-          options?: Json
-          position?: number
-          prompt?: string
-        }
+          activity_id?: string;
+          correct_index?: number;
+          created_at?: string;
+          difficulty?: string;
+          explanation?: string | null;
+          id?: string;
+          options?: Json;
+          position?: number;
+          prompt?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "questions_activity_id_fkey"
-            columns: ["activity_id"]
-            isOneToOne: false
-            referencedRelation: "activities"
-            referencedColumns: ["id"]
+            foreignKeyName: "questions_activity_id_fkey";
+            columns: ["activity_id"];
+            isOneToOne: false;
+            referencedRelation: "activities";
+            referencedColumns: ["id"];
           },
-        ]
-      }
-    }
+        ];
+      };
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
-      _assert_host: { Args: { _sid: string }; Returns: undefined }
+      _assert_host: { Args: { _sid: string }; Returns: undefined };
       _player_session: {
-        Args: { _player_id: string; _token: string }
-        Returns: string
-      }
-      _room_close_question: { Args: { _sid: string }; Returns: undefined }
-      _room_results: { Args: { _sid: string }; Returns: Json }
-      _room_tick: { Args: { _sid: string }; Returns: undefined }
+        Args: { _player_id: string; _token: string };
+        Returns: string;
+      };
+      _room_close_question: { Args: { _sid: string }; Returns: undefined };
+      _room_results: { Args: { _sid: string }; Returns: Json };
+      _room_tick: { Args: { _sid: string }; Returns: undefined };
       _room_view: {
-        Args: { _host: boolean; _player_id: string; _sid: string }
-        Returns: Json
-      }
+        Args: { _host: boolean; _player_id: string; _sid: string };
+        Returns: Json;
+      };
       calculate_score: {
-        Args: { _correct: boolean; _duration_s: number; _elapsed_ms: number }
-        Returns: number
-      }
-      create_game_session: { Args: { _activity_id: string }; Returns: string }
+        Args: { _correct: boolean; _duration_s: number; _elapsed_ms: number };
+        Returns: number;
+      };
+      create_game_session: { Args: { _activity_id: string }; Returns: string };
       get_player_state: {
-        Args: { _player_id: string; _token: string }
-        Returns: Json
-      }
-      host_close_question: { Args: { _sid: string }; Returns: Json }
-      host_finish_game: { Args: { _sid: string }; Returns: Json }
-      host_get_state: { Args: { _sid: string }; Returns: Json }
+        Args: { _player_id: string; _token: string };
+        Returns: Json;
+      };
+      host_close_question: { Args: { _sid: string }; Returns: Json };
+      host_finish_game: { Args: { _sid: string }; Returns: Json };
+      host_get_state: { Args: { _sid: string }; Returns: Json };
       host_next_question: {
-        Args: { _from_index: number; _sid: string }
-        Returns: Json
-      }
-      host_show_leaderboard: { Args: { _sid: string }; Returns: Json }
-      host_start_game: { Args: { _sid: string }; Returns: Json }
+        Args: { _from_index: number; _sid: string };
+        Returns: Json;
+      };
+      host_show_leaderboard: { Args: { _sid: string }; Returns: Json };
+      host_start_game: { Args: { _sid: string }; Returns: Json };
       join_game: {
-        Args: { _nickname: string; _pin: string; _token?: string }
-        Returns: Json
-      }
-      lookup_game_pin: { Args: { _pin: string }; Returns: Json }
+        Args: { _nickname: string; _pin: string; _token?: string };
+        Returns: Json;
+      };
+      lookup_game_pin: { Args: { _pin: string }; Returns: Json };
       submit_answer: {
         Args: {
-          _player_id: string
-          _question_id: string
-          _selected: number
-          _token: string
-        }
-        Returns: Json
-      }
-    }
+          _player_id: string;
+          _question_id: string;
+          _selected: number;
+          _token: string;
+        };
+        Returns: Json;
+      };
+    };
     Enums: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+      [_ in never]: never;
+    };
+  };
+};
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
+      Row: infer R;
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
       }
       ? R
       : never
-    : never
+    : never;
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+      Insert: infer I;
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
+        Insert: infer I;
       }
       ? I
       : never
-    : never
+    : never;
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+      Update: infer U;
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
+        Update: infer U;
       }
       ? U
       : never
-    : never
+    : never;
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
   EnumName extends (DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
+    : never;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["CompositeTypes"] | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+    : never;
 
 export const Constants = {
   public: {
     Enums: {},
   },
-} as const
+} as const;
