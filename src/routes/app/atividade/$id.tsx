@@ -2,8 +2,8 @@ import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { createGameSession } from "@/lib/room";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, Play } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, CheckCircle2, Edit3, Play } from "lucide-react";
 import {
   activityQuery,
   difficultyLabel,
@@ -12,6 +12,7 @@ import {
   teamsFromActivity,
 } from "@/lib/activities";
 import { TugOfWar } from "@/components/game/TugOfWar";
+import { ActivityEditor } from "@/components/app/ActivityEditor";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,8 +32,10 @@ export const Route = createFileRoute("/app/atividade/$id")({
 function AtividadeDetalhe() {
   const { id } = Route.useParams();
   const { data, isLoading } = useQuery(activityQuery(id));
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [starting, setStarting] = useState(false);
+  const [editing, setEditing] = useState(false);
   async function startGame() {
     setStarting(true);
     try {
@@ -60,6 +63,20 @@ function AtividadeDetalhe() {
   }
 
   const { activity, questions } = data;
+  if (editing && activity) {
+    return (
+      <ActivityEditor
+        activity={activity}
+        questions={questions}
+        onCancel={() => setEditing(false)}
+        onSaved={() => {
+          void queryClient.invalidateQueries({ queryKey: ["activity", id] });
+          void queryClient.invalidateQueries({ queryKey: ["activities"] });
+          setEditing(false);
+        }}
+      />
+    );
+  }
   const [teamA, teamB] = teamsFromActivity(activity);
 
   return (
@@ -84,15 +101,21 @@ function AtividadeDetalhe() {
             {gameModeLabel(activity.game_mode)} · {questions.length} perguntas
           </p>
         </div>
-        <Button
-          variant="hero"
-          size="lg"
-          disabled={starting || questions.length === 0}
-          onClick={() => void startGame()}
-        >
-          <Play className="size-4" aria-hidden="true" />
-          {starting ? "Criando sala..." : "Começar partida"}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="lg" onClick={() => setEditing(true)}>
+            <Edit3 className="size-4" aria-hidden="true" />
+            Editar atividade
+          </Button>
+          <Button
+            variant="hero"
+            size="lg"
+            disabled={starting || questions.length === 0}
+            onClick={() => void startGame()}
+          >
+            <Play className="size-4" aria-hidden="true" />
+            {starting ? "Criando sala..." : "Começar partida"}
+          </Button>
+        </div>
       </div>
 
       {isTeamMode(activity.game_mode) ? (
