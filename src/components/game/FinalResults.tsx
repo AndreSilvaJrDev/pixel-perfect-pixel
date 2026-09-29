@@ -1,4 +1,5 @@
-import { CheckCircle2, Clock, Target, Users, XCircle } from "lucide-react";
+import { CheckCircle2, Clock, Target, Trophy, Users, XCircle } from "lucide-react";
+import "./arena.css";
 import { teamColorVar } from "@/lib/activities";
 import { formatPoints, type RoomResults } from "@/lib/room";
 import { Leaderboard } from "./parts";
@@ -38,7 +39,15 @@ export function FinalResults({ view, results }: { view: Base; results: RoomResul
 
   return (
     <section className="space-y-6">
-      <h2 className="text-3xl font-extrabold">Resultado final</h2>
+      <header className="pp-results-title">
+        <Trophy className="size-10" aria-hidden="true" />
+        <div>
+          <h2 className="text-3xl font-extrabold">Partida concluída!</h2>
+          <p className="mt-1 text-sm text-blue-100">
+            Confira as conquistas e o aprendizado da turma.
+          </p>
+        </div>
+      </header>
 
       {adapter.teams ? (
         <div
@@ -56,7 +65,7 @@ export function FinalResults({ view, results }: { view: Base; results: RoomResul
       ) : null}
 
       {podium.length > 0 ? (
-        <ol className="grid grid-cols-3 items-end gap-3" aria-label="Pódio">
+        <ol className="pp-podium grid grid-cols-3 items-end gap-3" aria-label="Pódio">
           {[1, 0, 2].map((idx) => {
             const p = podium[idx];
             if (!p) return <li key={idx} />;
@@ -71,8 +80,10 @@ export function FinalResults({ view, results }: { view: Base; results: RoomResul
                   {formatPoints(p.score)}
                 </span>
                 <div
-                  className={`w-full rounded-t-2xl ${idx === 0 ? "bg-highlight" : idx === 1 ? "bg-primary/20" : "bg-accent/20"} ${h}`}
-                />
+                  className={`pp-podium-step w-full rounded-t-2xl ${idx === 0 ? "bg-highlight" : idx === 1 ? "bg-primary/20" : "bg-accent/20"} ${h}`}
+                >
+                  {p.rank}º
+                </div>
               </li>
             );
           })}

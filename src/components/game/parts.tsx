@@ -1,4 +1,5 @@
-import { Check, Timer, X } from "lucide-react";
+import { Check, Crown, Timer, X } from "lucide-react";
+import "./arena.css";
 import { cn } from "@/lib/utils";
 import { teamColorVar, type TeamSetup } from "@/lib/activities";
 import { formatPoints, type RankingRow, type RoomView } from "@/lib/room";
@@ -17,9 +18,11 @@ export function TimerBadge({ seconds, large }: { seconds: number; large?: boolea
       role="timer"
       aria-label={`${seconds} segundos restantes`}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full font-display font-extrabold tabular-nums",
-        seconds <= 5 ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary",
-        large ? "px-5 py-2 text-3xl" : "px-3 py-1 text-xl",
+        "inline-flex items-center gap-2 rounded-2xl border font-display font-extrabold tabular-nums shadow-sm",
+        seconds <= 5
+          ? "border-destructive/20 bg-destructive/10 text-destructive"
+          : "border-primary/15 bg-primary/10 text-primary",
+        large ? "px-5 py-2 text-3xl" : "px-3 py-1.5 text-xl",
       )}
     >
       <Timer className={large ? "size-7" : "size-5"} aria-hidden="true" />
@@ -30,8 +33,11 @@ export function TimerBadge({ seconds, large }: { seconds: number; large?: boolea
 
 export function QuestionHeader({ view }: { view: RoomView }) {
   return (
-    <p className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
-      Pergunta {view.question_index + 1} de {view.total_questions}
+    <p className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground">
+      <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-xs font-extrabold text-primary">
+        {view.question_index + 1}
+      </span>
+      de {view.total_questions} perguntas
     </p>
   );
 }
@@ -54,7 +60,7 @@ export function OptionGrid({
   const options = view.question?.options ?? [];
   const revealed = view.correct_index !== undefined;
   return (
-    <ul className={cn("grid gap-3", options.length === 2 ? "grid-cols-2" : "sm:grid-cols-2")}>
+    <ul className="grid gap-3 sm:grid-cols-2">
       {options.map((text, i) => {
         const correct = revealed && i === view.correct_index;
         const wrongPick = revealed && i === selected && !correct;
@@ -67,8 +73,8 @@ export function OptionGrid({
               onClick={() => onPick?.(i)}
               aria-pressed={selected === i}
               className={cn(
-                "flex w-full items-center gap-3 rounded-2xl border-2 bg-card text-left font-semibold transition-colors motion-reduce:transition-none",
-                size === "lg" ? "min-h-16 px-4 py-4 text-lg" : "min-h-12 px-4 py-3",
+                "pp-option flex w-full items-center gap-3 rounded-2xl border-2 bg-card text-left font-semibold shadow-sm transition-[transform,border-color,background-color,box-shadow] motion-reduce:transition-none",
+                size === "lg" ? "min-h-20 px-4 py-4 text-lg" : "min-h-12 px-4 py-3",
                 onPick &&
                   !disabled &&
                   "hover:border-primary focus-visible:border-primary active:scale-[0.99]",
@@ -82,7 +88,7 @@ export function OptionGrid({
               <span
                 aria-hidden="true"
                 className={cn(
-                  "flex size-9 shrink-0 items-center justify-center rounded-xl font-display text-base font-extrabold",
+                  "flex size-10 shrink-0 items-center justify-center rounded-xl font-display text-base font-extrabold shadow-sm",
                   label.tone,
                 )}
               >
@@ -162,13 +168,21 @@ export function Leaderboard({
           <li
             key={id ?? `${r.nickname}-${idx}`}
             className={cn(
-              "flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3",
-              id && id === highlightId && "border-primary bg-primary/5",
+              "flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-sm",
+              r.rank === 1 && "border-highlight/60 bg-highlight/10",
+              r.rank === 2 && "border-slate-300 bg-slate-50",
+              r.rank === 3 && "border-amber-700/20 bg-amber-50/50",
+              id && id === highlightId && "border-primary bg-primary/5 ring-2 ring-primary/20",
             )}
           >
             <span className="w-8 shrink-0 text-center font-display text-lg font-extrabold">
               {r.rank <= 3 ? (
-                <span aria-label={`${r.rank}º`}>{MEDALS[r.rank - 1]}</span>
+                <span className="inline-flex items-center gap-1" aria-label={`${r.rank}º`}>
+                  {r.rank === 1 ? (
+                    <Crown className="size-4 text-highlight-foreground" aria-hidden="true" />
+                  ) : null}
+                  {MEDALS[r.rank - 1]}
+                </span>
               ) : (
                 `${r.rank}º`
               )}
@@ -202,9 +216,12 @@ export function RaceTrack({ view, meId }: { view: RoomView; meId?: string | unde
       className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]"
       aria-label="Pista da corrida"
     >
-      <p className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-        Corrida do Saber
-      </p>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <p className="text-sm font-extrabold">Corrida do Saber</p>
+        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+          Placar ao vivo
+        </span>
+      </div>
       <ul className="space-y-3">
         {rows.map((r) => {
           const pct = Math.min(100, (r.score / max) * 100);

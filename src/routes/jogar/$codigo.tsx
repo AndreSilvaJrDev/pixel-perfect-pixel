@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import "@/components/game/arena.css";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, Flag, Loader2, Send, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -168,9 +169,11 @@ function SalaAluno() {
   }
 
   return (
-    <main className="flex min-h-[100dvh] flex-col items-center bg-surface px-4 py-8">
-      <Logo />
-      <div className="mt-8 flex w-full max-w-sm flex-1 flex-col">
+    <main className="pp-arena pp-student relative flex min-h-[100dvh] flex-col items-center">
+      <div className="pointer-events-none absolute -left-24 top-24 size-64 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 bottom-10 size-72 rounded-full bg-accent/10 blur-3xl" />
+      <Logo className="relative" />
+      <div className="pp-stage flex flex-col">
         {phase.kind === "checking" ? (
           <div className="flex flex-1 items-center justify-center" role="status">
             <Loader2 className="size-8 animate-spin text-primary" aria-hidden="true" />
@@ -379,7 +382,7 @@ function PlayerScreen({
           <QuestionHeader view={state} />
           <TimerBadge seconds={seconds} />
         </div>
-        <h1 className="break-words text-xl font-extrabold sm:text-2xl">{state.question?.prompt}</h1>
+        <h1 className="pp-question break-words font-extrabold">{state.question?.prompt}</h1>
         <OptionGrid
           view={state}
           size="lg"

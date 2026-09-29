@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import "@/components/game/arena.css";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
@@ -169,7 +170,7 @@ function SalaProfessor() {
   const isLast = view.question_index + 1 >= view.total_questions;
 
   return (
-    <div className="space-y-6">
+    <div className="pp-arena space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-muted-foreground">
@@ -223,7 +224,7 @@ function SalaProfessor() {
 
       {view.status === SESSION_STATUS.STARTING ? (
         <section
-          className="rounded-3xl border border-border bg-card p-10 text-center shadow-[var(--shadow-card)]"
+          className="pp-countdown rounded-3xl border border-border bg-card p-10 text-center shadow-[var(--shadow-card)]"
           role="status"
         >
           <QuestionHeader view={view} />
@@ -240,9 +241,7 @@ function SalaProfessor() {
             <QuestionHeader view={view} />
             <TimerBadge seconds={seconds} large />
           </div>
-          <h2 className="break-words text-2xl font-extrabold sm:text-3xl">
-            {view.question?.prompt}
-          </h2>
+          <h2 className="pp-question break-words font-extrabold">{view.question?.prompt}</h2>
           <OptionGrid view={view} size="lg" />
           <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xl font-extrabold" aria-live="polite">
@@ -404,7 +403,7 @@ function Lobby({
 
   return (
     <>
-      <section className="grid gap-6 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)] md:grid-cols-[1fr_auto] md:items-center">
+      <section className="pp-lobby grid gap-6 shadow-[var(--shadow-card)] md:grid-cols-[1fr_auto] md:items-center">
         <div className="min-w-0">
           <p className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
             Entre em
@@ -416,7 +415,7 @@ function Lobby({
             PIN
           </p>
           <p
-            className="font-display text-6xl font-extrabold tracking-[0.12em] text-primary sm:text-7xl"
+            className="pp-pin font-display font-extrabold"
             aria-label={`PIN ${view.pin.split("").join(" ")}`}
           >
             {view.pin}
@@ -433,7 +432,7 @@ function Lobby({
             </Button>
           </div>
         </div>
-        <div className="mx-auto rounded-2xl border border-border bg-background p-4">
+        <div className="pp-lobby-qr mx-auto">
           <QRCodeSVG value={link} size={200} level="M" title={`QR Code para ${link}`} />
         </div>
       </section>

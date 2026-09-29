@@ -1,4 +1,6 @@
 import { teamColorVar, type TeamSetup } from "@/lib/activities";
+import { formatPoints } from "@/lib/room";
+import "./arena.css";
 
 type TugOfWarProps = {
   teamA: TeamSetup;
@@ -8,103 +10,62 @@ type TugOfWarProps = {
   playersA?: number;
   playersB?: number;
 };
-
-/**
- * Indicador visual do modo Cabo de Guerra.
- * A corda se desloca para o lado do time com mais pontos.
- */
 export function TugOfWar({ teamA, teamB, scoreA, scoreB, playersA, playersB }: TugOfWarProps) {
-  // 50% = empate. Escala mínima de 6.000 pontos evita que o primeiro acerto leve a corda ao extremo.
   const scale = Math.max(scoreA + scoreB, 6000);
-  const ratio = 0.5 + (scoreA - scoreB) / (2 * scale);
+  // Time A fica a esquerda: o marcador acompanha o lado vencedor.
+  const ratio = 0.5 - (scoreA - scoreB) / (2 * scale);
   const knotPercent = Math.min(92, Math.max(8, ratio * 100));
-
   const leading = scoreA === scoreB ? null : scoreA > scoreB ? teamA : teamB;
-
   return (
-    <div className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-6">
-      <div className="flex items-center justify-between gap-4">
-        <TeamScore team={teamA} score={scoreA} players={playersA} align="left" />
-        <p className="shrink-0 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-          Cabo de Guerra
-        </p>
-        <TeamScore team={teamB} score={scoreB} players={playersB} align="right" />
+    <section className="pp-tug" aria-label="Cabo de Guerra">
+      <h3 className="pp-tug-header">Cabo de Guerra</h3>
+      <div className="pp-team-scores">
+        <TeamScore team={teamA} score={scoreA} players={playersA} />
+        <span aria-hidden="true" className="pt-2 text-sm text-blue-200">
+          ×
+        </span>
+        <TeamScore team={teamB} score={scoreB} players={playersB} right />
       </div>
-
       <div
-        className="relative mt-5 h-14"
+        className="pp-rope-field"
         role="img"
-        aria-label={`Placar do cabo de guerra: ${teamA.name} ${scoreA} pontos, ${teamB.name} ${scoreB} pontos.`}
+        aria-label={`${teamA.name}: ${scoreA} pontos. ${teamB.name}: ${scoreB} pontos. ${leading ? leading.name + " na liderança." : "Empate."}`}
       >
-        {/* corda */}
-        <div className="absolute inset-x-0 top-1/2 h-3 -translate-y-1/2 overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full transition-[width] duration-500 ease-out"
-            style={{ width: `${knotPercent}%`, backgroundColor: teamColorVar(teamA.color) }}
-          />
-        </div>
-        <div
-          className="absolute inset-x-0 top-1/2 h-3 -translate-y-1/2 rounded-full transition-[clip-path] duration-500 ease-out"
-          style={{
-            backgroundColor: teamColorVar(teamB.color),
-            clipPath: `inset(0 0 0 ${knotPercent}%)`,
-          }}
-        />
-        {/* marcador central de referência */}
-        <div
-          className="absolute left-1/2 top-1/2 h-8 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-border"
-          aria-hidden="true"
-        />
-        {/* nó da corda */}
-        <div
-          className="absolute top-1/2 size-8 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-card bg-foreground shadow-[var(--shadow-lift)] transition-[left] duration-500 ease-out"
-          style={{ left: `${knotPercent}%` }}
-          aria-hidden="true"
-        />
+        <span className="pp-pennant" style={{ left: 0, background: teamColorVar(teamA.color) }} />
+        <span className="pp-pennant" style={{ right: 0, background: teamColorVar(teamB.color) }} />
+        <span className="pp-rope-center" />
+        <span className="pp-rope" />
+        <span className="pp-rope-knot" style={{ left: `${knotPercent}%` }} />
       </div>
-
-      <p className="mt-3 text-center text-sm text-muted-foreground">
-        {leading ? (
-          <>
-            <span className="font-semibold text-foreground">{leading.name}</span> está puxando a
-            corda.
-          </>
-        ) : (
-          "Empate. A corda está no meio."
-        )}
+      <p className="pp-tug-caption" aria-live="polite">
+        {leading ? `${leading.name} está puxando a corda!` : "Tudo empatado. Cada resposta conta!"}
       </p>
-    </div>
+    </section>
   );
 }
-
 function TeamScore({
   team,
   score,
   players,
-  align,
+  right = false,
 }: {
   team: TeamSetup;
   score: number;
   players?: number | undefined;
-  align: "left" | "right";
+  right?: boolean;
 }) {
   return (
-    <div className={align === "right" ? "text-right" : "text-left"}>
-      <span
-        className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold"
-        style={{
-          backgroundColor: teamColorVar(team.color),
-          color: "var(--primary-foreground)",
-        }}
-      >
+    <div className="min-w-0" style={{ textAlign: right ? "right" : "left" }}>
+      <p className="pp-team-name" style={{ justifyContent: right ? "flex-end" : "flex-start" }}>
+        <i style={{ background: teamColorVar(team.color) }} aria-hidden="true" />
         {team.name}
-      </span>
-      <p className="mt-2 text-2xl font-extrabold leading-none">{score}</p>
-      {typeof players === "number" ? (
-        <p className="mt-1 text-xs text-muted-foreground">
-          {players} {players === 1 ? "aluno" : "alunos"}
-        </p>
-      ) : null}
+      </p>
+      <p className="pp-team-score">{formatPoints(score)}</p>
+      <small>
+        {typeof players === "number"
+          ? `${players} ${players === 1 ? "aluno" : "alunos"}`
+          : "pontos"}
+      </small>
     </div>
   );
 }
