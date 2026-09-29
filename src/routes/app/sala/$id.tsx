@@ -24,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { TugOfWar } from "@/components/game/TugOfWar";
 import { getModeAdapter } from "@/components/game/modes";
+import { ModeArena } from "@/components/game/ModeArena";
 import {
   Distribution,
   Leaderboard,
@@ -222,6 +223,8 @@ function SalaProfessor() {
         />
       ) : null}
 
+      {view.status === SESSION_STATUS.LOBBY && adapter.id !== "cabo" ? <ModeArena view={view} /> : null}
+
       {view.status === SESSION_STATUS.STARTING ? (
         <section
           className="pp-countdown rounded-3xl border border-border bg-card p-10 text-center shadow-[var(--shadow-card)]"
@@ -238,6 +241,7 @@ function SalaProfessor() {
       {view.status === SESSION_STATUS.QUESTION ? (
         <section className="space-y-5 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
           {adapter.id === "cabo" && adapter.Panel ? <adapter.Panel view={view} /> : null}
+          {adapter.id !== "cabo" ? <ModeArena view={view} /> : null}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <QuestionHeader view={view} />
             <TimerBadge seconds={seconds} large />

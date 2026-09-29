@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { TEAM_COLORS } from "@/lib/activities";
 import type { RoomView } from "@/lib/room";
 import { TugOfWar } from "./TugOfWar";
+import { ModeArena } from "./ModeArena";
 import { RaceTrack, teamsOf } from "./parts";
 
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
@@ -49,7 +50,7 @@ function TugPanel({ view }: { view: RoomView }) {
 }
 
 const ADAPTERS: Record<string, GameModeAdapter> = {
-  batalha: { id: "batalha", optionLabel: letters, Panel: null, teams: false },
+  batalha: { id: "batalha", optionLabel: letters, Panel: ModeArena, teams: false },
   vf: {
     id: "vf",
     optionLabel: (i, text) => ({
@@ -60,13 +61,13 @@ const ADAPTERS: Record<string, GameModeAdapter> = {
           ? "bg-success text-success-foreground"
           : "bg-destructive text-destructive-foreground",
     }),
-    Panel: null,
+    Panel: ModeArena,
     teams: false,
   },
   corrida: {
     id: "corrida",
     optionLabel: letters,
-    Panel: ({ view, meId }) => <RaceTrack view={view} meId={meId} />,
+    Panel: ({ view, meId }) => <div className="space-y-4"><ModeArena view={view} /><RaceTrack view={view} meId={meId} /></div>,
     teams: false,
   },
   cabo: { id: "cabo", optionLabel: letters, Panel: TugPanel, teams: true },

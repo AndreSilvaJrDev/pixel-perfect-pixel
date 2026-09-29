@@ -60,7 +60,7 @@ export function OptionGrid({
   const options = view.question?.options ?? [];
   const revealed = view.correct_index !== undefined;
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className={`pp-options-${adapter.id} grid gap-3 sm:grid-cols-2`}>
       {options.map((text, i) => {
         const correct = revealed && i === view.correct_index;
         const wrongPick = revealed && i === selected && !correct;
@@ -213,7 +213,7 @@ export function RaceTrack({ view, meId }: { view: RoomView; meId?: string | unde
   if (me && !rows.some((r) => r.id === me.id)) rows.push({ ...me, team: me.team } as RankingRow);
   return (
     <div
-      className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]"
+      className="pp-race-board rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]"
       aria-label="Pista da corrida"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -222,11 +222,12 @@ export function RaceTrack({ view, meId }: { view: RoomView; meId?: string | unde
           Placar ao vivo
         </span>
       </div>
+      {rows.length === 0 ? <p className="pp-race-empty">A pista está pronta. A classificação aparece quando a turma entrar.</p> : null}
       <ul className="space-y-3">
         {rows.map((r) => {
-          const pct = Math.min(100, (r.score / max) * 100);
+          const pct = Math.max(0, Math.min(100, (r.score / max) * 100));
           return (
-            <li key={r.id} className="flex items-center gap-3">
+            <li key={r.id} className="pp-race-row flex items-center gap-3" data-me={r.id === meId}>
               <span
                 className={cn(
                   "w-20 shrink-0 truncate text-sm font-semibold sm:w-28",
@@ -235,7 +236,8 @@ export function RaceTrack({ view, meId }: { view: RoomView; meId?: string | unde
               >
                 {r.nickname}
               </span>
-              <div className="relative h-8 flex-1 rounded-full border border-dashed border-border bg-muted/50">
+              <div className="pp-race-lane relative h-8 flex-1 rounded-full border border-dashed border-border bg-muted/50">
+                <span className="pp-race-finish" aria-hidden="true" />
                 <span
                   className="absolute top-1/2 flex size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-xs font-extrabold text-primary-foreground transition-[left] duration-700 motion-reduce:transition-none"
                   style={{ left: `calc(14px + (100% - 28px) * ${pct / 100})` }}
@@ -245,6 +247,7 @@ export function RaceTrack({ view, meId }: { view: RoomView; meId?: string | unde
                 </span>
                 <span className="sr-only">{`${r.rank}º lugar, ${formatPoints(r.score)} pontos`}</span>
               </div>
+              <span className="pp-race-points">{formatPoints(r.score)} <small>pts</small></span>
             </li>
           );
         })}

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/brand/Logo";
 import { teamColorVar } from "@/lib/activities";
 import { getModeAdapter } from "@/components/game/modes";
+import { ModeArena } from "@/components/game/ModeArena";
 import {
   Leaderboard,
   OptionGrid,
@@ -334,6 +335,7 @@ function PlayerScreen({
   if (state.status === SESSION_STATUS.LOBBY) {
     return (
       <div className="space-y-4">
+        {adapter.id !== "cabo" ? <ModeArena view={state} /> : null}
         <Card>
           <CheckCircle2 className="mx-auto size-10 text-success" aria-hidden="true" />
           <p className="mt-4 text-3xl font-extrabold">Você entrou!</p>
@@ -379,6 +381,7 @@ function PlayerScreen({
     return (
       <div className="space-y-4">
         {adapter.id === "cabo" && adapter.Panel ? <adapter.Panel view={state} meId={me?.id} /> : null}
+        {adapter.id !== "cabo" ? <ModeArena view={state} /> : null}
         <div className="flex items-center justify-between gap-3">
           <QuestionHeader view={state} />
           <TimerBadge seconds={seconds} />
