@@ -378,6 +378,7 @@ function PlayerScreen({
     const answered = !!me?.answered;
     return (
       <div className="space-y-4">
+        {adapter.id === "cabo" && adapter.Panel ? <adapter.Panel view={state} meId={me?.id} /> : null}
         <div className="flex items-center justify-between gap-3">
           <QuestionHeader view={state} />
           <TimerBadge seconds={seconds} />

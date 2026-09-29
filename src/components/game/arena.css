@@ -111,7 +111,31 @@
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: start;
   gap: 12px;
-  padding: 24px 20px 8px;
+  padding: 16px;
+}
+.pp-tug-scene {
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  background-color: #b8dbef;
+}
+.pp-team-scores > div {
+  background: #142d50f5;
+  border: 1px solid #ffffff70;
+  border-radius: 16px;
+  padding: 10px 16px;
+  width: fit-content;
+  max-width: 100%;
+  box-shadow: 0 4px 12px #142d5020;
+}
+.pp-team-scores > div:last-child { justify-self: end; }
+.pp-team-scores > span { visibility: hidden; }
+.pp-balance-label {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  color: #dbeafe;
+  padding-top: 10px;
 }
 .pp-team-scores small {
   color: #c5d5f2;
@@ -137,14 +161,14 @@
 }
 .pp-rope-field {
   position: relative;
-  height: 160px;
+  height: 88px;
   margin: 0 24px;
   border-bottom: 2px solid #ffffff35;
   background: repeating-linear-gradient(90deg, transparent 0 39px, #ffffff08 40px);
 }
 .pp-rope {
   position: absolute;
-  top: 80px;
+  top: 52px;
   left: 0;
   right: 0;
   height: 10px;
@@ -154,14 +178,14 @@
 }
 .pp-rope-center {
   position: absolute;
-  top: 28px;
+  top: 38px;
   bottom: 0;
   left: 50%;
   border-left: 2px dashed #ffffff70;
 }
 .pp-rope-knot {
   position: absolute;
-  top: 66px;
+  top: 38px;
   width: 30px;
   height: 38px;
   transform: translateX(-50%);
@@ -173,7 +197,7 @@
 }
 .pp-pennant {
   position: absolute;
-  top: 16px;
+  top: 10px;
   width: 48px;
   height: 38px;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%);
@@ -219,9 +243,13 @@
     font-size: 1rem;
   }
   .pp-team-scores {
-    gap: 8px;
-    padding: 20px 14px 8px;
+    gap: 4px;
+    padding: 8px;
   }
+  .pp-team-scores > div { padding: 6px 8px; border-radius: 10px; }
+  .pp-team-name { font-size: 12px; gap: 4px; }
+  .pp-team-score { font-size: 20px; }
+  .pp-team-scores small { font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pp-rope-knot,

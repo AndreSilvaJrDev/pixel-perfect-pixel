@@ -237,6 +237,7 @@ function SalaProfessor() {
 
       {view.status === SESSION_STATUS.QUESTION ? (
         <section className="space-y-5 rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+          {adapter.id === "cabo" && adapter.Panel ? <adapter.Panel view={view} /> : null}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <QuestionHeader view={view} />
             <TimerBadge seconds={seconds} large />

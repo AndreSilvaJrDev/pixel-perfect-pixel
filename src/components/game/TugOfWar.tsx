@@ -1,5 +1,6 @@
 import { teamColorVar, type TeamSetup } from "@/lib/activities";
 import { formatPoints } from "@/lib/room";
+import schoolArena from "@/assets/tug-school-arena.png";
 import "./arena.css";
 
 type TugOfWarProps = {
@@ -19,6 +20,7 @@ export function TugOfWar({ teamA, teamB, scoreA, scoreB, playersA, playersB }: T
   return (
     <section className="pp-tug" aria-label="Cabo de Guerra">
       <h3 className="pp-tug-header">Cabo de Guerra</h3>
+      <div className="pp-tug-scene" style={{ backgroundImage: `url(${schoolArena})` }}>
       <div className="pp-team-scores">
         <TeamScore team={teamA} score={scoreA} players={playersA} />
         <span aria-hidden="true" className="pt-2 text-sm text-blue-200">
@@ -26,11 +28,13 @@ export function TugOfWar({ teamA, teamB, scoreA, scoreB, playersA, playersB }: T
         </span>
         <TeamScore team={teamB} score={scoreB} players={playersB} right />
       </div>
+      </div>
       <div
         className="pp-rope-field"
         role="img"
         aria-label={`${teamA.name}: ${scoreA} pontos. ${teamB.name}: ${scoreB} pontos. ${leading ? leading.name + " na liderança." : "Empate."}`}
       >
+        <span className="pp-balance-label">Vantagem das equipes</span>
         <span className="pp-pennant" style={{ left: 0, background: teamColorVar(teamA.color) }} />
         <span className="pp-pennant" style={{ right: 0, background: teamColorVar(teamB.color) }} />
         <span className="pp-rope-center" />
