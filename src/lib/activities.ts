@@ -29,7 +29,22 @@ export type Question = {
   difficulty: string;
 };
 
-export const SUBJECTS = ["Português", "Matemática", "Ciências", "História", "Geografia"] as const;
+export const SUBJECTS = [
+  "Português",
+  "Matemática",
+  "Ciências",
+  "História",
+  "Geografia",
+  "Inglês",
+  "Artes",
+  "Educação Física",
+  "Física",
+  "Química",
+  "Biologia",
+  "Redação",
+  "Ensino Religioso",
+  "Tecnologia e Computação",
+] as const;
 export const GRADES = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export const DIFFICULTIES = [
   { value: "facil", label: "Fácil" },
