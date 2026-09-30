@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/brand/Logo";
 
+const CHECKOUT_URL = "https://pay.kiwify.com.br/pi0O1jt";
+
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/85 backdrop-blur">
@@ -23,7 +25,7 @@ export function SiteHeader() {
             <Link to="/login">Entrar</Link>
           </Button>
           <Button asChild variant="hero" size="sm">
-            <Link to="/cadastro">Criar conta</Link>
+            <a href={CHECKOUT_URL}>Comprar agora</a>
           </Button>
         </div>
       </div>

@@ -1,7 +1,8 @@
-import { Link } from "@tanstack/react-router";
 import { QrCode, Smartphone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroAsset from "@/assets/hero-professor-play.png";
+
+const CHECKOUT_URL = "https://pay.kiwify.com.br/pi0O1jt";
 
 export function Hero() {
   return (
@@ -23,9 +24,13 @@ export function Hero() {
             Escolha o conteúdo, deixe a IA criar as perguntas e seus alunos entram pelo celular
             usando um simples QR Code.
           </p>
+          <p className="mt-5 text-lg font-bold text-foreground sm:text-xl">
+            Professor Play Completo por R$ 27,90
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">Pagamento único.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="hero" size="xl">
-              <Link to="/cadastro">Criar meu primeiro jogo</Link>
+              <a href={CHECKOUT_URL}>Quero transformar minhas aulas em jogos</a>
             </Button>
             <Button asChild variant="outline" size="xl">
               <a href="#como-funciona">Ver como funciona</a>
